@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Index page</h1>
+{% if current_user.is_authenticated %}
+<p>Вы авторизованы</p>
+{% else %}
+<p>Вы не авторизованы</p>
+{% endif %}
+{% endblock %}
