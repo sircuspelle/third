@@ -2,8 +2,12 @@ from flask import Flask, redirect, render_template
 from flask_login import login_required, LoginManager
 
 from data import db_session
+
 from data.users import User
+from data.cards import Card
+
 from forms.authorizer_forms import RegisterForm
+from forms.card_form import CardsForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -49,23 +53,22 @@ def reqister():
     return render_template('register.html', title='Регистрация', form=form)
 
 
-# @app.route('/cards',  methods=['GET', 'POST'])
+@app.route('/cards',  methods=['GET', 'POST'])
 # @login_required
-# def add_news():
-#     form = WorksForm()
-#     if form.validate_on_submit():
-#         db_sess = db_session.create_session()
-#         jobs = Jobs()
-#         jobs.job = form.job.data
-#         jobs.team_leader = form.team_leader.data
-#         jobs.work_size = form.work_size.data
-#         jobs.collaborators = form.collaborators.data
-#         jobs.is_finished = form.is_finished.data
-#         db_sess.add(jobs)
-#         db_sess.commit()
-#         return redirect('/')
-#     return render_template('works.html', title='Добавление Работы',
-#                            form=form)
+def add_news():
+    form = CardsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        cards = Card()
+        cards.title = form.title.data
+        cards.region = form.region.data
+        cards.place = form.place.data
+        cards.longest = form.longest.data
+        db_sess.add(cards)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('card.html', title='Добавление Маршрут',
+                           form=form)
 
 def main():
     db_session.global_init("db/blogs.db")

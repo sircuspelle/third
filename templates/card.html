@@ -1,46 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Добавление Работы</h1>
+<h1>Создание карточки</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
-        {{ form.job.label }}<br>
-        {{ form.job(class="form-control") }}<br>
-        {% for error in form.job.errors %}
+        {{ form.title.label }}<br>
+        {{ form.title(class="form-control") }}<br>
+        {% for error in form.title.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
     <p>
-        {{ form.team_leader.label }}<br>
-        {{ form.team_leader(class="form-control") }}<br>
-        {% for error in form.team_leader.errors %}
+        {{ form.region.label }}<br>
+        {{ form.region(class="form-control") }}<br>
+        {% for error in form.region.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
     <p>
-        {{ form.work_size.label }}<br>
-        {{ form.work_size(class="form-control") }}<br>
-        {% for error in form.work_size.errors %}
+        {{ form.place.label }}<br>
+        {{ form.place(class="form-control") }}<br>
+        {% for error in form.place.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
     <p>
-        {{ form.collaborators.label }}<br>
-        {{ form.collaborators(class="form-control") }}<br>
-        {% for error in form.collaborators.errors %}
+        {{ form.longest.label }}<br>
+        {{ form.longest(class="form-control") }}<br>
+        {% for error in form.longest.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
-    <p>{{ form.is_finished() }} {{ form.is_finished.label }}</p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
 </form>

@@ -1,3 +1,5 @@
+import datetime
+
 import sqlalchemy
 from sqlalchemy import orm
 
@@ -12,10 +14,10 @@ class Card(SqlAlchemyBase):
     region = sqlalchemy.Column(sqlalchemy.String)
     place = sqlalchemy.Column(sqlalchemy.Integer)
     longest = sqlalchemy.Column(sqlalchemy.String)
-    changed_at = sqlalchemy.Column(sqlalchemy.Date)
-    map = sqlalchemy.Column(sqlalchemy.String)
-    txts = sqlalchemy.Column(sqlalchemy.String)
-    medias = sqlalchemy.Column(sqlalchemy.String)
+    changed_at = sqlalchemy.Column(sqlalchemy.Date, default=datetime.datetime.now)
+    map = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    txts = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    medias = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     creator = sqlalchemy.Column(sqlalchemy.Integer,
-                                    sqlalchemy.ForeignKey("users.id"))
+                                    sqlalchemy.ForeignKey("users.id"), default=1)
     leader_obj = orm.relationship('User')
