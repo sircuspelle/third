@@ -39,5 +39,24 @@ def reqister():
     return render_template('register.html', title='Регистрация', form=form)
 
 
+@app.route('/jobs',  methods=['GET', 'POST'])
+@login_required
+def add_news():
+    form = WorksForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        jobs = Jobs()
+        jobs.job = form.job.data
+        jobs.team_leader = form.team_leader.data
+        jobs.work_size = form.work_size.data
+        jobs.collaborators = form.collaborators.data
+        jobs.is_finished = form.is_finished.data
+        db_sess.add(jobs)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('works.html', title='Добавление Работы',
+                           form=form)
+
+
 if __name__ == '__main__':
     main()
