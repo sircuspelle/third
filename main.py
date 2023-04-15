@@ -24,7 +24,8 @@ def load_user(user_id):
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    return render_template("index.html", title='indexpage', cards='')
+
+    return render_template("index.html", title='indexpage', cards=)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -53,8 +54,7 @@ def reqister():
     return render_template('register.html', title='Регистрация', form=form)
 
 
-@app.route('/cards',  methods=['GET', 'POST'])
-# @login_required
+@app.route('/new_card',  methods=['GET', 'POST'])
 def add_cards():
     form = CardsForm()
     if form.validate_on_submit():
@@ -64,6 +64,9 @@ def add_cards():
         cards.region = form.region.data
         cards.place = form.place.data
         cards.longest = form.longest.data
+        #####
+        cards.creator = 1
+
         db_sess.add(cards)
         db_sess.commit()
         return redirect('/')

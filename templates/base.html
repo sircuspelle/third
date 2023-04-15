@@ -15,7 +15,7 @@
         <h1>Explorer</h1>
         <h2><a href="index" class="btn btn-secondary">Маршруты</a></h2>
         <h2><a href="index_news" class="btn btn-secondary">Новости</a></h2>
-        <h2><a href="card" class="btn btn-secondary">Добавить маршрут</a></h2>
+        <h2><a href="/new_card" class="btn btn-secondary">Добавить маршрут</a></h2>
         {% if current_user.is_authenticated %}
             <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
         {% else %}
