@@ -4,6 +4,13 @@
 <h1>Index page</h1>
 {% if current_user.is_authenticated %}
 <p>Вы авторизованы</p>
+{% for item in cards%}
+<a>
+<h2>{{item.title}}</h2>
+<h3>{{item.region}}, {{item.place}}</h3>
+<h3>item.creator-item.changed_at</h3>
+</a>
+{% endfor %}
 {% else %}
 <p>Вы не авторизованы</p>
 {% endif %}

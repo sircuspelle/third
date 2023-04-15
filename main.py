@@ -24,7 +24,7 @@ def load_user(user_id):
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    return render_template("index.html", title='indexpage')
+    return render_template("index.html", title='indexpage', cards='')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -55,7 +55,7 @@ def reqister():
 
 @app.route('/cards',  methods=['GET', 'POST'])
 # @login_required
-def add_news():
+def add_cards():
     form = CardsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
