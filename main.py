@@ -1,12 +1,12 @@
 from flask import Flask, redirect, render_template
-from flask_login import login_required, LoginManager, login_user
+from flask_login import login_required, LoginManager, login_user, logout_user
 
 from data import db_session
 from data.users import User
 from data.cards import Card
 
 from forms.authorizer_forms import RegisterForm, LoginForm
-# from forms.card_form import CardsForm
+from forms.card_form import CardsForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -72,24 +72,32 @@ def login():
 @login_required
 def add_news():
     pass
-#    form = CardsForm()
-#    if form.validate_on_submit():
-#        db_sess = db_session.create_session()
-#        cards = Card()
-#        cards.title = form.title.data
-#        cards.region = form.region.data
-#        cards.place = form.place.data
-#        cards.longest = form.longest.data
-#        db_sess.add(cards)
-#        db_sess.commit()
-#        return redirect('/')
-#    return render_template('card.html', title='Добавление Маршрут',
-#                           form=form)
+    form = CardsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        cards = Card()
+        cards.title = form.title.data
+        cards.region = form.region.data
+        cards.place = form.place.data
+        cards.longest = form.longest.data
+        db_sess.add(cards)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('card.html', title='Добавление Маршрут',
+                           form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 def main():
     db_session.global_init("db/blogs.db")
     app.run()
+
 
 if __name__ == '__main__':
     main()

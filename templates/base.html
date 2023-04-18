@@ -17,10 +17,11 @@
         <h2><a href="index_news" class="btn btn-secondary">Новости</a></h2>
         <h2><a href="card" class="btn btn-secondary">Добавить маршрут</a></h2>
         {% if current_user.is_authenticated %}
-            <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+            <a class="navbar-brand" href="/logout">{{ current_user.nickname }}</a>
         {% else %}
             <p>
-                <a class="btn btn-primary " href="/register">Авторизоваться</a>
+                <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
+                <a class="btn btn-success" href="/login">Войти</a>
             </p>
         {% endif %}
     </nav>
