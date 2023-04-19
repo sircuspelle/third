@@ -3,6 +3,13 @@
 {% block content %}
 <h1>Создание карточки</h1>
 <form action="" method="post">
+    <header>
+    <nav class="navbar navbar-dark bg-primary">
+        {% for number in count %}
+            <h2><a href=create_card/{{number}} class="btn btn-secondary">{{number}}</a></h2>
+        {% endfor %}
+    </nav>
+    </header>
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>
@@ -14,32 +21,24 @@
         {% endfor %}
     </p>
     <p>
-        {{ form.region.label }}<br>
-        {{ form.region(class="form-control") }}<br>
-        {% for error in form.region.errors %}
+        {{ form.text.label }}<br>
+        {{ form.text(class="form-control") }}<br>
+        {% for error in form.text.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
     <p>
-        {{ form.place.label }}<br>
-        {{ form.place(class="form-control") }}<br>
-        {% for error in form.place.errors %}
+        {{ form.picture.label }}<br>
+        {{ form.picture(class="form-control") }}<br>
+        {% for error in form.picture.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
-    <p>
-        {{ form.longest.label }}<br>
-        {{ form.longest(class="form-control") }}<br>
-        {% for error in form.longest.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
+
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
 </form>
