@@ -4,6 +4,29 @@
 <h1>Index page</h1>
 {% if current_user.is_authenticated %}
 <p>Вы авторизованы</p>
+<h1>Записи в блоге</h1>
+<a href="news" class="btn btn-secondary">Добавить новость</a>
+{% for item in news%}
+<div class="col-md6 border rounded">
+    <h2>{{item.title}}</h2>
+    <div>
+        {{item.content}}
+    </div>
+    <div>
+        Автор - {{item.user.nickname}}, Дата написания - {{item.created_date}}
+    </div>
+</div>
+{% if current_user.is_authenticated and current_user == item.user %}
+    <div>
+        <a href="/news/{{ item.id }}" class="btn btn-warning">
+            Изменить
+        </a>
+        <a href="/news_delete/{{ item.id }}" class="btn btn-danger">
+            Удалить
+        </a>
+    </div>
+{% endif %}
+{% endfor %}
 {% for item in cards%}
 <a>
 <h2>{{item.title}}</h2>
