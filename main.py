@@ -17,6 +17,7 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -31,17 +32,17 @@ def index():
         cards = cards[:5]
     return render_template("index.html", title='indexpage', cards=cards)
 
+
 @app.route("/news")
 def show_news():
     return """Тут пока пусто, но мы уже почти это исправили"""
+
 
 @app.route("/cards")
 def show_cards():
     db_sess = db_session.create_session()
     cards = db_sess.query(Card).all()
     return render_template("cards.html", title='catalogue', cards=cards)
-
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -69,13 +70,15 @@ def reqister():
         return redirect('/index')
     return render_template('register.html', title='Регистрация', form=form)
 
+
 cards = None
 points = 0
-@app.route('/new_card_pre',  methods=['GET', 'POST'])
+
+
+@app.route('/new_card_pre', methods=['GET', 'POST'])
 def start_to_add_cards():
     pre_form = PreCreateForm()
     if pre_form.validate_on_submit():
-
         global cards, points
         cards = Card()
         cards.points_count = pre_form.points_count.data
@@ -87,12 +90,12 @@ def start_to_add_cards():
     return render_template('pre_card.html', title='Добавление Маршрута',
                            form=pre_form)
 
+
 @app.route('/new_card', methods=['GET', 'POST'])
 def add_cards():
     global cards, points
     form = MainCardsForm()
     if form.validate_on_submit():
-
         db_sess = db_session.create_session()
 
         cards.title = form.title.data
@@ -106,6 +109,7 @@ def add_cards():
         return redirect('/create_card/1')
     return render_template('main_card.html', title='Добавление Маршрута', count=points,
                            form=form)
+
 
 @app.route('/create_card/<int:number>', methods=['GET', 'POST'])
 def add_page(number):
@@ -128,16 +132,52 @@ def add_page(number):
             return redirect(f'/create_card/{number + 1}')
         else:
             return redirect('/')
-    return render_template('small_card.html', title=f'Добавление Маршрута{number}', count=points,
-                           form=form)
+
+    if number % 2:
+        return render_template('small_card.html', title=f'Расскажи о точке остановки{number}',
+                               count=points,
+                               form=form)
+    else:
+        return render_template('small_card.html',
+                               title=f'Расскажи, как добирался от пункта {number - 1} до следующей остановки',
+                               count=points,
+                               form=form)
+
+
+heads_in_card = 0
 
 @app.route("/display_card/<int:number>")
-def display_card():
-    return 'fiasko'
+def display_card(number):
+    global heads_in_card, cards
+
+    db_sess = db_session.create_session()
+    cards = db_sess.query(Card).filter(Card.id == number).first()
+    if cards:
+
+        heads_in_card = [i for i in range(1, cards.points_count * 2 + 1)]
+        return render_template('main_card_display.html', card = cards,
+                               title=f'{cards.title}', count=heads_in_card)
+
+@app.route("/display_card/page/<int:number>")
+def display_page(number):
+
+    global heads_in_card, cards
+
+    db_sess = db_session.create_session()
+    card = db_sess.query(Card_Page).filter(Card_Page.mother == cards.id).all()
+    if len(card) == cards.points_count * 2:
+        card = card[number - 1]
+        return render_template('small_card_display.html',
+                               title=f'{card.title}', count=heads_in_card)
+    else:
+        return """неполноценная карточка"""
+
+
 
 def main():
     db_session.global_init("db/blogs.db")
     app.run()
+
 
 if __name__ == '__main__':
     main()

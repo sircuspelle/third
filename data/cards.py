@@ -19,7 +19,7 @@ class Card(SqlAlchemyBase):
     map = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     creator = sqlalchemy.Column(sqlalchemy.Integer,
                                     sqlalchemy.ForeignKey("users.id"), default=1)
-    leader_obj = orm.relationship('User')
+    creator_obj = orm.relationship('User')
 
 class Card_Page(SqlAlchemyBase):
     __tablename__ = 'small_cards'

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{card.title}}</h1>
+<h4>{{card.creator_obj.nickname}} - {{card.changed_at}} {{card.region}}, {{card.place}}</h4>
+<h4>Продолжительность около {{card.longest}}</h4>
+<h4>{{card.map}}</h4>
+<form action="" method="post">
+<header>
+    <nav class="navbar navbar-dark bg-primary">
+        {% for number in count %}
+            <h2><a href=/display_card/page/{{number}} class="btn btn-secondary">{{number}}</a></h2>
+        {% endfor %}
+    </nav>
+    </header>
+
+</form>
+{% endblock %}
