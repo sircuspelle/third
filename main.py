@@ -1,5 +1,5 @@
 from flask import Flask, redirect, render_template
-from flask_login import login_required, LoginManager, login_user, logout_user
+from flask_login import login_required, LoginManager, login_user, logout_user, current_user
 
 from data import db_session
 
@@ -71,7 +71,7 @@ def reqister():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/index')
+        return redirect('/')
     return render_template('register.html', title='Регистрация', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -94,6 +94,7 @@ points = 0
 
 
 @app.route('/new_card_pre', methods=['GET', 'POST'])
+@login_required
 def start_to_add_cards():
     pre_form = PreCreateForm()
     if pre_form.validate_on_submit():
@@ -120,7 +121,7 @@ def add_cards():
         cards.place = form.place.data
         cards.longest = form.longest.data
         ##### пропиши пользователя
-        cards.creator =
+        cards.creator = current_user.id
 
         db_sess.add(cards)
         db_sess.commit()
@@ -141,7 +142,7 @@ def add_page(number):
         card.picture = form.picture.data
 
         #####
-        card.mother = 2
+        card.mother = cards.id
 
         db_sess.add(card)
         db_sess.commit()
@@ -152,12 +153,12 @@ def add_page(number):
             return redirect('/')
 
     if number % 2:
-        return render_template('small_card.html', title=f'Расскажи о точке остановки{number}',
+        return render_template('small_card.html', title=f'шаг{number}', head=f'Расскажи о точке остановки{number}',
                                count=points,
                                form=form)
     else:
-        return render_template('small_card.html',
-                               title=f'Расскажи, как добирался от пункта {number - 1} до следующей остановки',
+        return render_template('small_card.html', title=f'шаг{number}',
+                               head=f'Расскажи, как добирался от пункта {number - 1} до следующей остановки',
                                count=points,
                                form=form)
 
@@ -183,9 +184,9 @@ def display_page(number):
 
     db_sess = db_session.create_session()
     card = db_sess.query(Card_Page).filter(Card_Page.mother == cards.id).all()
-    if len(card) == cards.points_count * 2:
+    if card:
         card = card[number - 1]
-        return render_template('small_card_display.html',
+        return render_template('small_card_display.html', card=card,
                                title=f'{card.title}', count=heads_in_card)
     else:
         return """неполноценная карточка"""
