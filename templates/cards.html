@@ -3,14 +3,10 @@
 {% block content %}
 <h1>Index page</h1>
 {% for item in cards%}
-{% if loop.index % 2 == 0 %}
+<a href="/display_card/{{item.id}}"><
     <h2 align="left">{{item.title}}</h2>
     <h3 align="left">{{item.region}}, {{item.place}}</h3>
     <h3 align="left">{{item.creator}}-{{item.changed_at}}</h3>
- {% else %}
-    <h2 align="right">{{item.title}}</h2>
-    <h3 align="right">{{item.region}}, {{item.place}}</h3>
-    <h3 align="right">{{item.creator}}-{{item.changed_at}}</h3>
- {% endif %}
+</a>
 {% endfor %}
 {% endblock %}
