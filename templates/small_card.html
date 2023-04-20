@@ -1,15 +1,8 @@
-{% extends "base.html" %}
+{% extends "creator.html" %}
 
-{% block content %}
+{% block content_2 %}
 <h1>{{head}}</h1>
 <form action="" method="post">
-    <header>
-    <nav class="navbar navbar-dark bg-primary">
-        {% for number in count %}
-            <h2><a href="create_card/{{number}}" class="btn btn-secondary">{{number}}</a></h2>
-        {% endfor %}
-    </nav>
-    </header>
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>

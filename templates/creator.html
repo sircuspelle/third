@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+    <nav class="navbar navbar-dark bg-primary">
+      <h2><a href = "/new_card" class="btn btn-secondary">0</a></h2>
+        {% for number in count %}
+        <h2><a href="/create_card/{{number}}" class="btn btn-secondary">{{number}}</a></h2>
+        {% endfor %}
+    </nav>
+</header>
+<br>
+<main role="main" class="container">
+    {% block content_2 %}{% endblock %}
+</main>
+
+{% endblock %}

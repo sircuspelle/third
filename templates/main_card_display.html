@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{card.title}}</h1>
-<h4>{{card.creator_obj.nickname}} - {{card.changed_at}} {{card.region}}, {{card.place}}</h4>
-<h4>Продолжительность около {{card.longest}}</h4>
-<h4>{{card.map}}</h4>
+<h1>{{cards.title}}</h1>
+<h4>{{cards.creator_obj.nickname}} - {{cards.changed_at}} {{cards.region}}, {{cards.place}}</h4>
+<h4>Продолжительность около {{cards.longest}}</h4>
+<h4>{{cards.map}}</h4>
 <form action="" method="post">
 <header>
     <nav class="navbar navbar-dark bg-primary">
@@ -13,6 +13,8 @@
         {% endfor %}
     </nav>
     </header>
-
 </form>
+<main role="main" class="container">
+    {% block content_2 %}{% endblock %}
+</main>
 {% endblock %}
