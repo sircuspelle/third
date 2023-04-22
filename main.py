@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect, render_template, request, abort
 from flask_login import login_required, LoginManager, login_user, logout_user, current_user
 
 from data import db_session
@@ -95,8 +95,6 @@ def login():
 
 cards = None
 points = 0
-
-
 @app.route('/new_card_pre', methods=['GET', 'POST'])
 @login_required
 def start_to_add_cards():
@@ -124,7 +122,6 @@ def add_cards():
         cards.title = form.title.data
         cards.place = form.place.data
         cards.longest = form.longest.data
-        ##### пропиши пользователя
         cards.creator = current_user.id
 
         db_sess.add(cards)
@@ -132,6 +129,39 @@ def add_cards():
         cards = {'id': cards.id}
         return redirect('/create_card/1')
     return render_template('main_card.html', title='Добавление Маршрута', count=points,
+                           form=form, page=0)
+
+@app.route('/card/<int:id>', methods=['GET', 'POST'])
+@login_required
+def change_cards(id):
+    global cards, points
+    form = MainCardsForm()
+
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        cards = db_sess.query(Card).filter(Card.id == id,
+                                          Card.creator == current_user.id
+                                          ).first()
+        if cards:
+            form.title.data = cards.title
+            form.place.data = cards.place
+            form.longest.data = cards.longest
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        cards = db_sess.query(Card).filter(Card.id == id,
+                                           Card.creator == current_user.id
+                                           ).first()
+        if cards:
+            cards.title = form.title.data
+            cards.place = form.place.data
+            cards.longest = form.longest.data
+            db_sess.commit()
+            cards = {'id': cards.id}
+
+        return redirect('/create_card/1')
+    return render_template('main_card.html', title='Изменение Маршрута', count=points,
                            form=form)
 
 
@@ -155,7 +185,7 @@ def add_page(number):
         if number != points[-1]:
             return redirect(f'/create_card/{number + 1}')
         else:
-            ### ТУТ надо дописать проверки перед добавлением
+
             return redirect('/')
 
     if number % 2:
@@ -164,7 +194,7 @@ def add_page(number):
                                count=points,
                                form=form)
     else:
-        return render_template('small_card.html', title=f'шаг {number}',
+        return render_template('small_card.html', title=f'шаг {number}', page=number,
                                head=f'Расскажи, как добирался от пункта {number - 1} до следующей остановки',
                                count=points,
                                form=form)

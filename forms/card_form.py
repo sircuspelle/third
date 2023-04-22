@@ -7,9 +7,9 @@ from wtforms.validators import DataRequired
 class MainCardsForm(FlaskForm):
     title = StringField('Название', validators=[DataRequired()])
 
-    place = StringField('Место')
+    place = StringField('Место', validators=[DataRequired()])
 
-    longest = IntegerField('продолжительность')
+    longest = IntegerField('продолжительность', validators=[DataRequired()])
 
     submit = SubmitField('Применить')
 
