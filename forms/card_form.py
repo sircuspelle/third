@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, TextAreaField, FileField, SelectField
 from wtforms import BooleanField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, NumberRange
 
 
 class MainCardsForm(FlaskForm):
@@ -9,7 +9,8 @@ class MainCardsForm(FlaskForm):
 
     place = StringField('Место', validators=[DataRequired()])
 
-    longest = IntegerField('продолжительность', validators=[DataRequired()])
+    longest = IntegerField('продолжительность',
+                           validators=[DataRequired(), NumberRange(min=0, max=8760)])
 
     submit = SubmitField('Применить')
 

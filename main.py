@@ -93,15 +93,17 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
-cards = None
+cards = Card()
 points = 0
+
+
 @app.route('/new_card_pre', methods=['GET', 'POST'])
 @login_required
 def start_to_add_cards():
     pre_form = PreCreateForm()
     if pre_form.validate_on_submit():
         global cards, points
-        cards = Card()
+
         cards.points_count = pre_form.points_count.data
         cards.region = pre_form.region.data
 
@@ -119,17 +121,17 @@ def add_cards():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
 
+        cards.id = db_sess.query(Card).all()[-1].id + 1
+
         cards.title = form.title.data
         cards.place = form.place.data
         cards.longest = form.longest.data
         cards.creator = current_user.id
 
-        db_sess.add(cards)
-        db_sess.commit()
-        cards = {'id': cards.id}
-        return redirect('/create_card/1')
+        return redirect('/new_card/page/1')
     return render_template('main_card.html', title='Добавление Маршрута', count=points,
                            form=form, page=0)
+
 
 @app.route('/card/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -137,11 +139,14 @@ def change_cards(id):
     global cards, points
     form = MainCardsForm()
 
+    db_sess = db_session.create_session()
+    cards = db_sess.query(Card).filter(Card.id == id,
+                                       Card.creator == current_user.id
+                                       ).first()
+
+    points = [i for i in range(1, cards.points_count * 2 + 1)]
+
     if request.method == "GET":
-        db_sess = db_session.create_session()
-        cards = db_sess.query(Card).filter(Card.id == id,
-                                          Card.creator == current_user.id
-                                          ).first()
         if cards:
             form.title.data = cards.title
             form.place.data = cards.place
@@ -149,23 +154,16 @@ def change_cards(id):
         else:
             abort(404)
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        cards = db_sess.query(Card).filter(Card.id == id,
-                                           Card.creator == current_user.id
-                                           ).first()
         if cards:
             cards.title = form.title.data
             cards.place = form.place.data
             cards.longest = form.longest.data
-            db_sess.commit()
-            cards = {'id': cards.id}
-
-        return redirect('/create_card/1')
+        return redirect('/card/page/1')
     return render_template('main_card.html', title='Изменение Маршрута', count=points,
-                           form=form)
+                           form=form, delta=True, page=0)
 
 
-@app.route('/create_card/<int:number>', methods=['GET', 'POST'])
+@app.route('/new_card/page/<int:number>', methods=['GET', 'POST'])
 def add_page(number):
     global cards, points
     form = SmallCardsForm()
@@ -175,21 +173,20 @@ def add_page(number):
         card.txt = form.text.data
         card.title = form.title.data
         card.picture = form.picture.data
-
-        #####
-        card.mother = cards['id']
+        card.mother = cards.id
 
         db_sess.add(card)
         db_sess.commit()
 
         if number != points[-1]:
-            return redirect(f'/create_card/{number + 1}')
+            return redirect(f'/new_card/page/{number + 1}')
         else:
-
+            db_sess.add(cards)
+            db_sess.commit()
             return redirect('/')
 
     if number % 2:
-        return render_template('small_card.html', title=f'шаг {number}',
+        return render_template('small_card.html', title=f'шаг {number}', page=number,
                                head=f'Расскажи о точке остановки {number}',
                                count=points,
                                form=form)
@@ -197,6 +194,48 @@ def add_page(number):
         return render_template('small_card.html', title=f'шаг {number}', page=number,
                                head=f'Расскажи, как добирался от пункта {number - 1} до следующей остановки',
                                count=points,
+                               form=form)
+
+
+@app.route('/card/page/<int:number>', methods=['GET', 'POST'])
+def change_page(number):
+    global cards, points
+    form = SmallCardsForm()
+
+    db_sess = db_session.create_session()
+    card = db_sess.query(Card_Page).filter(Card_Page.mother == cards.id).all()[number - 1]
+    if request.method == "GET":
+        if card:
+            form.title.data = card.title
+            form.text.data = card.txt
+            form.picture.data = card.picture
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        if card:
+            card.txt = form.text.data
+            card.title = form.title.data
+            card.picture = form.picture.data
+
+            db_sess.add(card)
+            db_sess.commit()
+
+            if number != points[-1]:
+                return redirect(f'/card/page/{number + 1}')
+            else:
+                db_sess.add(cards)
+                db_sess.commit()
+                return redirect('/')
+
+    if number % 2:
+        return render_template('small_card.html', title=f'шаг {number}', page=number,
+                               head=f'Расскажи о точке остановки {number}',
+                               count=points,
+                               form=form, delta=True)
+    else:
+        return render_template('small_card.html', title=f'шаг {number}', page=number,
+                               head=f'Расскажи, как добирался от пункта {number - 1} до следующей остановки',
+                               count=points, delta=True,
                                form=form)
 
 
@@ -223,10 +262,32 @@ def display_page(number):
     card = db_sess.query(Card_Page).filter(Card_Page.mother == cards.id).all()
     if card:
         card = card[number - 1]
-        return render_template('small_card_display.html', card=card, cards=cards,
+        return render_template('small_card_display.html', card=card, cards=cards, page=number,
                                title=f'{card.title}', count=heads_in_card)
     else:
         return """неполноценная карточка"""
+
+
+@app.route('/card_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def cards_delete(id):
+    db_sess = db_session.create_session()
+    cards = db_sess.query(Card).filter(Card.id == id,
+                                       Card.creator == current_user.id
+                                       ).first()
+    if cards:
+        db_sess.delete(cards)
+
+        cards = db_sess.query(Card_Page).filter(Card_Page.mother == id,
+                                                Card.creator == current_user.id
+                                                ).all()
+        for card in cards:
+            db_sess.delete(card)
+
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/cards')
 
 
 def main():

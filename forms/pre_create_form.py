@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, SubmitField
+from wtforms.validators import DataRequired, NumberRange
 
 regions = [(1, "Республика Адыгея (Адыгея)"),
            (2, "Республика Башкортостан"),
@@ -88,8 +89,8 @@ regions = [(1, "Республика Адыгея (Адыгея)"),
 
 
 class PreCreateForm(FlaskForm):
-    region = SelectField('Region', coerce=int, choices=regions)
+    region = SelectField('Region', coerce=int, choices=regions, validators=[DataRequired()])
 
-    points_count = IntegerField('Количество остановок в маршруте')
+    points_count = IntegerField('Количество остановок в маршруте', validators=[DataRequired(), NumberRange(min=0, max=12, message='подозрительное число остановок')])
 
     submit = SubmitField('Применить')

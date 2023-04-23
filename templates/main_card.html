@@ -1,7 +1,11 @@
 {% extends "creator.html" %}
 
 {% block content_2 %}
+{% if delta %}
+<h1>Изменение карточки</h1>
+{% else %}
 <h1>Создание карточки</h1>
+{% endif %}
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
