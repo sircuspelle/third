@@ -17,7 +17,7 @@ class User(SqlAlchemyBase, UserMixin):
     region = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
-    loyality = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    loyality = sqlalchemy.Column(sqlalchemy.Integer, default=0)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     def set_password(self, password):

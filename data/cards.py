@@ -11,9 +11,11 @@ class Card(SqlAlchemyBase):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String)
-    region = sqlalchemy.Column(sqlalchemy.String)
+    region = sqlalchemy.Column(sqlalchemy.String, default='Санкт-Петербург')
     place = sqlalchemy.Column(sqlalchemy.Integer)
     longest = sqlalchemy.Column(sqlalchemy.String)
+    loyality = sqlalchemy.Column(sqlalchemy.String, default='0')
+    loyality_counter = sqlalchemy.Column(sqlalchemy.Integer, default=0)
     points_count = sqlalchemy.Column(sqlalchemy.Integer)
     changed_at = sqlalchemy.Column(sqlalchemy.Date, default=datetime.datetime.now)
     map = sqlalchemy.Column(sqlalchemy.String, nullable=True)

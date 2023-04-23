@@ -34,7 +34,7 @@ def logout():
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    cards = db_sess.query(Card).all()
+    cards = sorted(db_sess.query(Card).all(), key=lambda x: x.loyality_counter)
     if len(cards) > 5:
         cards = cards[:5]
     return render_template("index.html", title='indexpage', cards=cards)
@@ -49,6 +49,7 @@ def show_news():
 def show_cards():
     db_sess = db_session.create_session()
     cards = db_sess.query(Card).all()
+
     return render_template("cards.html", title='catalogue', cards=cards)
 
 
@@ -122,6 +123,8 @@ def add_cards():
         db_sess = db_session.create_session()
 
         cards.id = db_sess.query(Card).all()[-1].id + 1
+
+        db_sess.close()
 
         cards.title = form.title.data
         cards.place = form.place.data
@@ -242,15 +245,15 @@ def change_page(number):
 heads_in_card = 0
 
 
-@app.route("/display_card/<int:number>")
-def display_card(number):
+@app.route("/display_card/<int:id>")
+def display_card(id):
     global heads_in_card, cards
 
     db_sess = db_session.create_session()
-    cards = db_sess.query(Card).filter(Card.id == number).first()
+    cards = db_sess.query(Card).filter(Card.id == id).first()
     if cards:
         heads_in_card = [i for i in range(1, cards.points_count * 2 + 1)]
-        return render_template('main_card_display.html', cards=cards,
+        return render_template('main_card_display.html', cards=cards, page=0,
                                title=f'{cards.title}', count=heads_in_card)
 
 
@@ -269,7 +272,6 @@ def display_page(number):
 
 
 @app.route('/card_delete/<int:id>', methods=['GET', 'POST'])
-@login_required
 def cards_delete(id):
     db_sess = db_session.create_session()
     cards = db_sess.query(Card).filter(Card.id == id,
@@ -288,6 +290,33 @@ def cards_delete(id):
     else:
         abort(404)
     return redirect('/cards')
+
+
+@app.route('/like/<string:arg>', methods=['GET'])
+def cards_like(arg):
+    print('ok')
+
+    id, number = map(int, arg.split('-'))
+
+    db_sess = db_session.create_session()
+    card = db_sess.query(Card).filter(Card.id == id,
+                                      Card.creator == current_user.id).first()
+
+    if card:
+        if str(current_user.id) not in str(card.loyality).split():
+            card.loyality = str(card.loyality) + ' ' + str(current_user.id)
+
+            card.loyality_counter += 1
+            card.creator_obj.loyality += 1
+
+            db_sess.commit()
+    else:
+        abort(404)
+
+    if number == 0:
+        return redirect(f"/display_card/{id}")
+    else:
+        return redirect(f"/display_card/page/{number}")
 
 
 def main():
