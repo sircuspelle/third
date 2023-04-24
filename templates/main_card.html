@@ -1,22 +1,17 @@
-{% extends "base.html" %}
+{% extends "creator.html" %}
 
-{% block content %}
+{% block content_2 %}
+{% if delta %}
+<h1>Изменение карточки</h1>
+{% else %}
 <h1>Создание карточки</h1>
+{% endif %}
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>
         {{ form.title(class="form-control") }}<br>
         {% for error in form.title.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.region.label }}<br>
-        {{ form.region(class="form-control") }}<br>
-        {% for error in form.region.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
@@ -40,6 +35,7 @@
             </p>
         {% endfor %}
     </p>
+
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
 </form>
