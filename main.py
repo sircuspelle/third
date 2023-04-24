@@ -9,12 +9,16 @@ from data.news import News
 from forms.authorizer_forms import RegisterForm, LoginForm
 from forms.card_form import CardsForm
 from forms.news import NewsForm
+from forms.forum import ForumForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+username = ''
 
 
 @login_manager.user_loader
@@ -109,7 +113,11 @@ def add_news():
         db_sess = db_session.create_session()
         news = News()
         news.title = form.title.data
-        news.content = form.content.data
+        if len(form.content.data) > 120:
+            news.preview = form.content.data[:120:] + "..."
+            news.content = form.content.data
+        else:
+            news.content = form.content.data
         news.is_private = form.is_private.data
         current_user.news.append(news)
         db_sess.merge(current_user)
@@ -141,7 +149,12 @@ def edit_news(id):
                                           ).first()
         if news:
             news.title = form.title.data
-            news.content = form.content.data
+            if len(form.content.data) > 120:
+                news.preview = form.content.data[:120:] + "..."
+                news.content = form.content.data
+            else:
+                news.preview = ''
+                news.content = form.content.data
             news.is_private = form.is_private.data
             db_sess.commit()
             return redirect('/')
@@ -166,6 +179,40 @@ def news_delete(id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.route('/reading_news/<int:id>', methods=['GET', 'POST'])
+@login_required
+def reading_news(id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.id == id,
+                                      News.user == current_user
+                                      ).first()
+    return render_template('reading_news.html', news=news)
+
+
+@app.route('/forum', methods=['GET', 'POST'])
+@login_required
+def forum():
+    global username
+    form = ForumForm()
+    if username:
+        form.content.data = f'@{username}, '
+    if form.submit.data:
+        with open('files/forum0.txt', "a", encoding="utf8") as file:
+            file.write(f"{form.content.data};{current_user.nickname};{current_user.id}\n")
+    with open('files/forum0.txt', "r", encoding="utf8") as file:
+        content = file.readlines()
+        content = [i.rsplit(';', 2) for i in content]
+    return render_template('forum.html', title='Форум', form=form, content=content)
+
+
+@app.route('/forum/<nickname>', methods=['GET', 'POST'])
+@login_required
+def select_name(nickname):
+    global username
+    username = nickname
+    return redirect('/forum')
 
 
 def main():

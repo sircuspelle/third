@@ -10,22 +10,29 @@
 <div class="col-md6 border rounded">
     <h2>{{item.title}}</h2>
     <div>
-        {{item.content}}
+        {% if item.preview %}
+            {{ item.preview }}
+        {% else %}
+            {{item.content}}
+        {% endif %}
     </div>
     <div>
         Автор - {{item.user.nickname}}, Дата написания - {{item.created_date}}
     </div>
 </div>
-{% if current_user.is_authenticated and current_user == item.user %}
-    <div>
+<div>
+    <a href="/reading_news/{{ item.id }}" class="btn btn-success">
+        Читать
+    </a>
+    {% if current_user.is_authenticated and current_user == item.user %}
         <a href="/news/{{ item.id }}" class="btn btn-warning">
             Изменить
         </a>
         <a href="/news_delete/{{ item.id }}" class="btn btn-danger">
             Удалить
         </a>
-    </div>
-{% endif %}
+    {% endif %}
+</div>
 {% endfor %}
 {% for item in cards%}
 <a>

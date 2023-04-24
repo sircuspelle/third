@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Форум</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+{% for message in content %}
+<div class="col-md6 border rounded">
+    <div>
+        {{message[1]}}
+    </div>
+    <div>
+        {{message[0]}}
+    </div>
+</div>
+<a href="/forum/{{ message[1] }}" class="btn btn-success">
+    Ответить
+</a>
+{% endfor %}
+<p>
+    {{ form.content.label }}<br>
+    {{ form.content(class="form-control") }}<br>
+    {% for error in form.content.errors %}
+        <p content="alert alert-danger" role="alert">
+            {{ error }}
+        </p>
+    {% endfor %}
+</p>
+<p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+{{message}}
+</form>
+{% endblock %}
