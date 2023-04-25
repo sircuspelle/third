@@ -92,7 +92,7 @@ class PreCreateForm(FlaskForm):
 
     points_count = IntegerField('Количество остановок в маршруте', validators=[DataRequired(),
                                                                                NumberRange(min=0,
-                                                                                           max=12,
+                                                                                           max=6,
                                                                                            message='подозрительное число остановок')])
 
     submit = SubmitField('Применить')

@@ -12,6 +12,8 @@ class MainCardsForm(FlaskForm):
     longest = IntegerField('продолжительность',
                            validators=[DataRequired(), NumberRange(min=0, max=8760)])
 
+    map = StringField('Карта')
+
     submit = SubmitField('Применить')
 
 

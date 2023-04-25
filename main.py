@@ -11,6 +11,30 @@ from forms.authorizer_forms import RegisterForm, LoginForm
 from forms.card_form import MainCardsForm, SmallCardsForm
 from forms.pre_create_form import PreCreateForm
 
+import requests
+
+
+def region_coords(name):
+    geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={name}&format=json"
+
+    # Выполняем запрос.
+    response = requests.get(geocoder_request)
+    if response:
+        # Преобразуем ответ в json-объект
+        json_response = response.json()
+
+        # Получаем первый топоним из ответа геокодера.
+        # Согласно описанию ответа, он находится по следующему пути:
+        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+        # Координаты центра топонима:
+        toponym_coodrinates = toponym["Point"]["pos"]
+
+        return ','.join(toponym_coodrinates.split()[::-1])
+    else:
+        print("Ошибка выполнения запроса:")
+        print(geocoder_request)
+        print("Http статус:", response.status_code, "(", response.reason, ")")
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
@@ -33,6 +57,9 @@ def logout():
 
 @app.route("/")
 def index():
+
+    print("бог ты мой, мы дома")
+
     db_sess = db_session.create_session()
     cards = sorted(db_sess.query(Card).all(), key=lambda x: x.loyality_counter)
     if len(cards) > 5:
@@ -108,18 +135,37 @@ def start_to_add_cards():
         cards.points_count = pre_form.points_count.data
         cards.region = pre_form.region.data
 
+
+
         points = [i for i in range(1, cards.points_count * 2 + 1)]
 
-        return redirect('/new_card')
+        return redirect(
+        f'''/new_card_pre_map#type=hybrid&center={region_coords(cards.region)}&zoom=9&points={[
+            [55.80, 37.50],
+            [55.80, 37.40],
+            [55.70, 37.50],
+            [55.70, 37.40]
+        ]}''')
+
     return render_template('pre_card.html', title='Добавление Маршрута',
                            form=pre_form)
 
+@app.route('/new_card_pre_map', methods=['GET', 'POST'])
+def add_map():
+    return render_template('pre_map.html', title='Добавление Карты')
 
+@app.route('/set_map/<string:arg>')
+def set_map(arg):
+    print(arg)
+    global cards
+    cards.map = arg
+    return redirect(f'''/new_card''')
 @app.route('/new_card', methods=['GET', 'POST'])
 def add_cards():
     global cards, points
     form = MainCardsForm()
     if form.validate_on_submit():
+
         db_sess = db_session.create_session()
 
         cards.id = db_sess.query(Card).all()[-1].id + 1
