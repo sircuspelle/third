@@ -43,17 +43,21 @@ def index():
     cards = db_sess.query(Card).all()
     if len(cards) > 5:
         cards = cards[:5]
-    if current_user.is_authenticated:
-        news = db_sess.query(News).filter(
-            (News.user == current_user) | (News.is_private != True))
-    else:
-        news = db_sess.query(News).filter(News.is_private != True)
-    return render_template("index.html", cards=cards, news=news)
+    return render_template("index.html", cards=cards)
 
 
-@app.route('/news',  methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/news',  methods=['GET', 'POST'])
 @login_required
-def add_news():
+def card_news(card_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != True))
+    card = db_sess.query(Card).filter(Card.id == card_id).first()
+    return render_template("card_news.html", news=news, card=card)
+
+
+@app.route('/card_<int:card_id>/add_news',  methods=['GET', 'POST'])
+@login_required
+def add_news(card_id):
     form = NewsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -65,21 +69,22 @@ def add_news():
         else:
             news.content = form.content.data
         news.is_private = form.is_private.data
+        news.card_id = card_id
         current_user.news.append(news)
         db_sess.merge(current_user)
         db_sess.commit()
-        return redirect('/')
+        return redirect(f'/card_{card_id}/news')
     return render_template('news.html', title='Добавление новости',
                            form=form)
 
 
-@app.route('/news/<int:id>', methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/edit_news/<int:news_id>', methods=['GET', 'POST'])
 @login_required
-def edit_news(id):
+def edit_news(card_id, news_id):
     form = NewsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        news = db_sess.query(News).filter(News.id == id,
+        news = db_sess.query(News).filter(News.id == news_id,
                                           News.user == current_user
                                           ).first()
         if news:
@@ -90,7 +95,7 @@ def edit_news(id):
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        news = db_sess.query(News).filter(News.id == id,
+        news = db_sess.query(News).filter(News.id == news_id,
                                           News.user == current_user
                                           ).first()
         if news:
@@ -103,7 +108,7 @@ def edit_news(id):
                 news.content = form.content.data
             news.is_private = form.is_private.data
             db_sess.commit()
-            return redirect('/')
+            return redirect(f'/card_{card_id}/news')
         else:
             abort(404)
     return render_template('news.html',
@@ -112,11 +117,11 @@ def edit_news(id):
                            )
 
 
-@app.route('/news_delete/<int:id>', methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/news_delete/<int:news_id>', methods=['GET', 'POST'])
 @login_required
-def news_delete(id):
+def news_delete(card_id, news_id):
     db_sess = db_session.create_session()
-    news = db_sess.query(News).filter(News.id == id,
+    news = db_sess.query(News).filter(News.id == news_id,
                                       News.user == current_user
                                       ).first()
     if news:
@@ -124,41 +129,45 @@ def news_delete(id):
         db_sess.commit()
     else:
         abort(404)
-    return redirect('/')
+    return redirect(f'/card_{card_id}/news')
 
 
-@app.route('/reading_news/<int:id>', methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/reading_news/<int:news_id>', methods=['GET', 'POST'])
 @login_required
-def reading_news(id):
+def reading_news(card_id, news_id):
     db_sess = db_session.create_session()
-    news = db_sess.query(News).filter(News.id == id,
+    news = db_sess.query(News).filter(News.id == news_id,
                                       News.user == current_user
                                       ).first()
     return render_template('reading_news.html', news=news)
 
 
-@app.route('/forum', methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/forum', methods=['GET', 'POST'])
 @login_required
-def forum():
+def forum(card_id):
     global username
     form = ForumForm()
     if username:
         form.content.data = f'@{username}, '
     if form.submit.data:
-        with open('files/forum0.txt', "a", encoding="utf8") as file:
+        with open(f'files/forum{card_id}.txt', "a", encoding="utf8") as file:
             file.write(f"{form.content.data};{current_user.nickname};{current_user.id}\n")
-    with open('files/forum0.txt', "r", encoding="utf8") as file:
-        content = file.readlines()
-        content = [i.rsplit(';', 2) for i in content]
-    return render_template('forum.html', title='Форум', form=form, content=content)
+    try:
+        with open(f'files/forum{card_id}.txt', "r", encoding="utf8") as file:
+            content = file.readlines()
+            content = [i.rsplit(';', 2) for i in content]
+    except:
+        with open(f'files/forum{card_id}.txt', "w", encoding="utf8") as file:
+            content = []
+    return render_template('forum.html', title='Форум', form=form, content=content, card_id=card_id)
 
 
-@app.route('/forum/<nickname>', methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/forum/<nickname>', methods=['GET', 'POST'])
 @login_required
-def select_name(nickname):
+def select_name(card_id, nickname):
     global username
     username = nickname
-    return redirect('/forum')
+    return redirect(f'/card_{card_id}/forum')
 
 
 @app.route("/cards")
@@ -237,7 +246,10 @@ def add_cards():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
 
-        cards.id = db_sess.query(Card).all()[-1].id + 1
+        if db_sess.query(Card).all():
+            cards.id = db_sess.query(Card).all()[-1].id + 1
+        else:
+            cards.id = 1
 
         cards.title = form.title.data
         cards.place = form.place.data

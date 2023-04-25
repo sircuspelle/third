@@ -3,44 +3,27 @@
 {% block content %}
 <h1>Index page</h1>
 <h1>Записи в блоге</h1>
-<a href="news" class="btn btn-secondary">Добавить новость</a>
-{% for item in news%}
-<div class="col-md6 border rounded">
-    <h2>{{item.title}}</h2>
-    <div>
-        {% if item.preview %}
-            {{ item.preview }}
-        {% else %}
-            {{item.content}}
-        {% endif %}
-    </div>
-    <div>
-        Автор - {{item.user.nickname}}, Дата написания - {{item.created_date}}
-    </div>
-</div>
-<div>
-    <a href="/reading_news/{{ item.id }}" class="btn btn-success">
-        Читать
-    </a>
-    {% if current_user.is_authenticated and current_user == item.user %}
-        <a href="/news/{{ item.id }}" class="btn btn-warning">
-            Изменить
-        </a>
-        <a href="/news_delete/{{ item.id }}" class="btn btn-danger">
-            Удалить
-        </a>
-    {% endif %}
-</div>
-{% endfor %}
 {% for item in cards%}
 {% if loop.index % 2 == 0 %}
-    <a href="/display_card/{{item.id}}"><h2 align="left">{{item.title}}</h2></a>
-    <h3 align="left">{{item.region}}, {{item.place}}</h3>
-    <h3 align="left">{{item.creator}}-{{item.changed_at}}</h3>
+    <div align="left">
+        <a href="/display_card/{{item.id}}"><h2>{{item.title}}</h2></a>
+        <h3>{{item.region}}, {{item.place}}</h3>
+        <h3>{{item.creator}}-{{item.changed_at}}</h3>
+        {% if current_user.is_authenticated and current_user.id == item.creator %}
+            <a href="/card_{{item.id}}/news" class="btn btn-primary">Новости</a>
+            <a href="/card_{{item.id}}/forum" class="btn btn-success">Форум</a>
+        {% endif %}
+    </div>
 {% else %}
-    <a href="/display_card/{{item.id}}"><h2 align="right">{{item.title}}</h2></a>
-    <h3 align="right">{{item.region}}, {{item.place}}</h3>
-    <h3 align="right">{{item.creator}}-{{item.changed_at}}</h3>
+     <div align="right">
+        <a href="/display_card/{{item.id}}"><h2>{{item.title}}</h2></a>
+        <h3>{{item.region}}, {{item.place}}</h3>
+        <h3>{{item.creator}}-{{item.changed_at}}</h3>
+        {% if current_user.is_authenticated and current_user.id == item.creator %}
+            <a href="/card_{{item.id}}/forum" class="btn btn-success">Форум</a>
+            <a href="/card_{{item.id}}/news" class="btn btn-primary">Новости</a>
+        {% endif %}
+    </div>
 {% endif %}
 {% endfor %}
 {% endblock %}
