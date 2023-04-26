@@ -1,0 +1,254 @@
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from flask import Flask, redirect, render_template\r\nfrom flask_login import login_required, LoginManager\r\n\r\nfrom data import db_session\r\n\r\nfrom data.users import User\r\nfrom data.cards import Card\r\n\r\nfrom forms.authorizer_forms import RegisterForm\r\nfrom forms.card_form import CardsForm\r\n\r\napp = Flask(__name__)\r\napp.config['SECRET_KEY'] = 'yandexlyceum_secret_key'\r\n\r\nlogin_manager = LoginManager()\r\nlogin_manager.init_app(app)\r\n\r\n@login_manager.user_loader\r\ndef load_user(user_id):\r\n    db_sess = db_session.create_session()\r\n    return db_sess.query(User).get(user_id)\r\n\r\n\r\n@app.route(\"/\")\r\ndef index():\r\n    db_sess = db_session.create_session()\r\n    cards = db_sess.query(Card).all()\r\n    return render_template(\"index.html\", title='indexpage', cards=cards)\r\n\r\n\r\n@app.route('/register', methods=['GET', 'POST'])\r\ndef reqister():\r\n    form = RegisterForm()\r\n    if form.validate_on_submit():\r\n        if form.password.data != form.password_again.data:\r\n            return render_template('register.html', title='Регистрация',\r\n                                   form=form,\r\n                                   message=\"Пароли не совпадают\")\r\n        db_sess = db_session.create_session()\r\n        if db_sess.query(User).filter(User.email == form.email.data).first():\r\n            return render_template('register.html', title='Регистрация',\r\n                                   form=form,\r\n                                   message=\"Такой пользователь уже есть\")\r\n        user = User(\r\n            nickname=form.nickname.data,\r\n            region=form.region.data,\r\n            email=form.email.data,\r\n            about=form.about.data\r\n        )\r\n        user.set_password(form.password.data)\r\n        db_sess.add(user)\r\n        db_sess.commit()\r\n        return redirect('/index')\r\n    return render_template('register.html', title='Регистрация', form=form)\r\n\r\n\r\n@app.route('/new_card',  methods=['GET', 'POST'])\r\ndef add_cards():\r\n    form = CardsForm(num=2)\r\n    if form.validate_on_submit():\r\n        db_sess = db_session.create_session()\r\n        cards = Card()\r\n        cards.title = form.title.data\r\n        cards.region = form.region.data\r\n        cards.place = form.place.data\r\n        cards.longest = form.longest.data\r\n        #####\r\n        cards.creator = 1\r\n\r\n        db_sess.add(cards)\r\n        db_sess.commit()\r\n        return redirect('/')\r\n    return render_template('card.html', title='Добавление Маршрута',\r\n                           form=form)\r\n\r\ndef main():\r\n    db_session.global_init(\"db/blogs.db\")\r\n    app.run()\r\n\r\nif __name__ == '__main__':\r\n    main()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision 9ede5ca70fba006ccafa76054feaff04792dfab8)
++++ b/main.py	(date 1681905871412)
+@@ -1,12 +1,11 @@
+ from flask import Flask, redirect, render_template
+-from flask_login import login_required, LoginManager
++from flask_login import login_required, LoginManager, login_user, logout_user
+ 
+ from data import db_session
+-
+ from data.users import User
+ from data.cards import Card
+ 
+-from forms.authorizer_forms import RegisterForm
++from forms.authorizer_forms import RegisterForm, LoginForm
+ from forms.card_form import CardsForm
+ 
+ app = Flask(__name__)
+@@ -15,6 +14,7 @@
+ login_manager = LoginManager()
+ login_manager.init_app(app)
+ 
++
+ @login_manager.user_loader
+ def load_user(user_id):
+     db_sess = db_session.create_session()
+@@ -50,13 +50,30 @@
+         user.set_password(form.password.data)
+         db_sess.add(user)
+         db_sess.commit()
+-        return redirect('/index')
++        return redirect('/')
+     return render_template('register.html', title='Регистрация', form=form)
+ 
+ 
+-@app.route('/new_card',  methods=['GET', 'POST'])
+-def add_cards():
+-    form = CardsForm(num=2)
++@app.route('/login', methods=['GET', 'POST'])
++def login():
++    form = LoginForm()
++    if form.validate_on_submit():
++        db_sess = db_session.create_session()
++        user = db_sess.query(User).filter(User.email == form.email.data).first()
++        if user and user.check_password(form.password.data):
++            login_user(user, remember=form.remember_me.data)
++            return redirect("/")
++        return render_template('login.html',
++                               message="Неправильный логин или пароль",
++                               form=form)
++    return render_template('login.html', title='Авторизация', form=form)
++
++
++@app.route('/cards',  methods=['GET', 'POST'])
++@login_required
++def add_news():
++    pass
++    form = CardsForm()
+     if form.validate_on_submit():
+         db_sess = db_session.create_session()
+         cards = Card()
+@@ -64,18 +81,26 @@
+         cards.region = form.region.data
+         cards.place = form.place.data
+         cards.longest = form.longest.data
+-        #####
+-        cards.creator = 1
+-
+         db_sess.add(cards)
+         db_sess.commit()
+         return redirect('/')
+-    return render_template('card.html', title='Добавление Маршрута',
++    return render_template('card.html', title='Добавление Маршрут',
+                            form=form)
+ 
++
++@app.route('/logout')
++@login_required
++def logout():
++    logout_user()
++    return redirect("/")
++
++
++
++
+ def main():
+     db_session.global_init("db/blogs.db")
+     app.run()
+ 
++
+ if __name__ == '__main__':
+     main()
+Index: templates/card.html
+===================================================================
+diff --git a/templates/card.html b/templates/card.html
+deleted file mode 100644
+--- a/templates/card.html	(revision 9ede5ca70fba006ccafa76054feaff04792dfab8)
++++ /dev/null	(revision 9ede5ca70fba006ccafa76054feaff04792dfab8)
+@@ -1,60 +0,0 @@
+-{% extends "base.html" %}
+-
+-{% block content %}
+-<h1>Создание карточки</h1>
+-<form action="" method="post">
+-    {{ form.hidden_tag() }}
+-    <p>
+-        {{ form.title.label }}<br>
+-        {{ form.title(class="form-control") }}<br>
+-        {% for error in form.title.errors %}
+-            <p class="alert alert-danger" role="alert">
+-                {{ error }}
+-            </p>
+-        {% endfor %}
+-    </p>
+-    <p>
+-        {{ form.region.label }}<br>
+-        {{ form.region(class="form-control") }}<br>
+-        {% for error in form.region.errors %}
+-            <p class="alert alert-danger" role="alert">
+-                {{ error }}
+-            </p>
+-        {% endfor %}
+-    </p>
+-    <p>
+-        {{ form.place.label }}<br>
+-        {{ form.place(class="form-control") }}<br>
+-        {% for error in form.place.errors %}
+-            <p class="alert alert-danger" role="alert">
+-                {{ error }}
+-            </p>
+-        {% endfor %}
+-    </p>
+-    <p>
+-        {{ form.longest.label }}<br>
+-        {{ form.longest(class="form-control") }}<br>
+-        {% for error in form.longest.errors %}
+-            <p class="alert alert-danger" role="alert">
+-                {{ error }}
+-            </p>
+-        {% endfor %}
+-    </p>
+-
+-    {% for text_field in form.texts%}
+-    <p>
+-        {{ text_field.label }}<br>
+-        {{ text_field(class="form-control") }}<br>
+-        {% for error in text_field.errors %}
+-            <p class="alert alert-danger" role="alert">
+-                {{ error }}
+-            </p>
+-        {% endfor %}
+-    </p>
+-    {% endfor %}
+-
+-
+-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+-    {{message}}
+-</form>
+-{% endblock %}
+\ No newline at end of file
+Index: templates/index.html
+===================================================================
+diff --git a/templates/index.html b/templates/index.html
+deleted file mode 100644
+--- a/templates/index.html	(revision 9ede5ca70fba006ccafa76054feaff04792dfab8)
++++ /dev/null	(revision 9ede5ca70fba006ccafa76054feaff04792dfab8)
+@@ -1,16 +0,0 @@
+-{% extends "base.html" %}
+-
+-{% block content %}
+-<h1>Index page</h1>
+-{% for item in cards%}
+-{% if loop.index % 2 == 0 %}
+-    <h2 align="left">{{item.title}}</h2>
+-    <h3 align="left">{{item.region}}, {{item.place}}</h3>
+-    <h3 align="left">{{item.creator}}-{{item.changed_at}}</h3>
+- {% else %}
+-    <h2 align="right">{{item.title}}</h2>
+-    <h3 align="right">{{item.region}}, {{item.place}}</h3>
+-    <h3 align="right">{{item.creator}}-{{item.changed_at}}</h3>
+- {% endif %}
+-{% endfor %}
+-{% endblock %}
+\ No newline at end of file
+Index: templates/base.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\r\n    <link rel=\"stylesheet\"\r\n          href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\"\r\n          integrity=\"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh\"\r\n          crossorigin=\"anonymous\">\r\n    <title>{{title}}</title>\r\n</head>\r\n<body>\r\n<header>\r\n    <nav class=\"navbar navbar-dark bg-primary\">\r\n        <h1>Explorer</h1>\r\n        <h2><a href=\"index\" class=\"btn btn-secondary\">Маршруты</a></h2>\r\n        <h2><a href=\"index_news\" class=\"btn btn-secondary\">Новости</a></h2>\r\n        <h2><a href=\"/new_card\" class=\"btn btn-secondary\">Добавить маршрут</a></h2>\r\n        {% if current_user.is_authenticated %}\r\n            <a class=\"navbar-brand\" href=\"/logout\">{{ current_user.name }}</a>\r\n        {% else %}\r\n            <p>\r\n                <a class=\"btn btn-primary \" href=\"/register\">Авторизоваться</a>\r\n            </p>\r\n        {% endif %}\r\n    </nav>\r\n</header>\r\n<main role=\"main\" class=\"container\">\r\n    {% block content %}{% endblock %}\r\n</main>\r\n</body>\r\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/base.html b/templates/base.html
+--- a/templates/base.html	(revision 9ede5ca70fba006ccafa76054feaff04792dfab8)
++++ b/templates/base.html	(date 1681905936980)
+@@ -15,12 +15,13 @@
+         <h1>Explorer</h1>
+         <h2><a href="index" class="btn btn-secondary">Маршруты</a></h2>
+         <h2><a href="index_news" class="btn btn-secondary">Новости</a></h2>
+-        <h2><a href="/new_card" class="btn btn-secondary">Добавить маршрут</a></h2>
++        <h2><a href="/new_card"  class="btn btn-secondary">Добавить маршрут</a></h2>
+         {% if current_user.is_authenticated %}
+-            <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
++            <a class="navbar-brand" href="/logout">{{ current_user.nickname }}</a>
+         {% else %}
+             <p>
+-                <a class="btn btn-primary " href="/register">Авторизоваться</a>
++                <a class="btn btn-primary " href="/register">Зарегистрироваться</a>
++                <a class="btn btn-success" href="/login">Войти</a>
+             </p>
+         {% endif %}
+     </nav>
+Index: data/users.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import datetime\r\n\r\nimport sqlalchemy\r\nfrom sqlalchemy import orm\r\n\r\nfrom .db_session import SqlAlchemyBase\r\n\r\nfrom werkzeug.security import check_password_hash, generate_password_hash\r\n\r\n\r\nclass User(SqlAlchemyBase):\r\n    __tablename__ = 'users'\r\n\r\n    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)\r\n    nickname = sqlalchemy.Column(sqlalchemy.String, nullable=True)\r\n    region = sqlalchemy.Column(sqlalchemy.String, nullable=True)\r\n    about = sqlalchemy.Column(sqlalchemy.String, nullable=True)\r\n    email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)\r\n    loyality = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)\r\n    hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)\r\n\r\n\r\n    def set_password(self, password):\r\n        self.hashed_password = generate_password_hash(password)\r\n\r\n\r\n    def check_password(self, password):\r\n        return check_password_hash(self.hashed_password, password)\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/data/users.py b/data/users.py
+--- a/data/users.py	(revision 9ede5ca70fba006ccafa76054feaff04792dfab8)
++++ b/data/users.py	(date 1681905937314)
+@@ -1,4 +1,5 @@
+ import datetime
++from flask_login import UserMixin
+ 
+ import sqlalchemy
+ from sqlalchemy import orm
+@@ -8,7 +9,7 @@
+ from werkzeug.security import check_password_hash, generate_password_hash
+ 
+ 
+-class User(SqlAlchemyBase):
++class User(SqlAlchemyBase, UserMixin):
+     __tablename__ = 'users'
+ 
+     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+@@ -19,10 +20,8 @@
+     loyality = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+ 
+-
+     def set_password(self, password):
+         self.hashed_password = generate_password_hash(password)
+ 
+-
+     def check_password(self, password):
+         return check_password_hash(self.hashed_password, password)

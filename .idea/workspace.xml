@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f7a3958f-4f68-4287-bf6e-a703f4dce27f" name="Changes" comment="перед слиянием с простыми картами" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="origin/lesha" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="maps_simple" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2OFfM5xJ1fY8Dpz0NdjVuIn3pPj" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/alsol/PycharmProject&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\alsol\third_1" />
+      <recent name="C:\Users\alsol\third_1\templates" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\alsol\third_1\static\img" />
+      <recent name="C:\Users\alsol\third_1\img" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.main">
+    <configuration name="cards" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="third_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/data" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/data/cards.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="db_session" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="third_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/data" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/data/db_session.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="loadertyu" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="third_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../PycharmProject/for_project" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../PycharmProject/for_project/loadertyu.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="third_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../PycharmProject/WEB3/sqlalchemy3_mars" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../PycharmProject/WEB3/sqlalchemy3_mars/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="third_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main (1)" />
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.db_session" />
+        <item itemvalue="Python.cards" />
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f7a3958f-4f68-4287-bf6e-a703f4dce27f" name="Changes" comment="" />
+      <created>1681161199446</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1681161199446</updated>
+    </task>
+    <task id="LOCAL-00001" summary="add base.html, card.html, cards.py, change main.py,">
+      <created>1681328605563</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1681328605563</updated>
+    </task>
+    <task id="LOCAL-00002" summary="я дописал базовый шаблон, написал к нему расширение  index.html. Это пока заглушка просто, показывет зарегался ли ты. Немного поправио код для регистрации. Там надо его чинить, но это твоё дело. а ещё я переименовал файл с формой регистрации, чтобы не путаться, а то с таким именем уже есть в другой папке">
+      <created>1681331961588</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1681331961588</updated>
+    </task>
+    <task id="LOCAL-00003" summary="вроде бы написал все три компонента для функционирования системы добавления карточек. Тут всё примитивно, но система есть. Нужно дописывать всё до оглашённого функционала, пока нет текста, картинок, карты и системы ссылок, но это ненадолго">
+      <created>1681334898534</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1681334898534</updated>
+    </task>
+    <task id="LOCAL-00004" summary="пушу card_form и последние изменения, связанные с добавлением журнала">
+      <created>1681584597787</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1681584597787</updated>
+    </task>
+    <task id="LOCAL-00005" summary="это первый коммит в этой ветке, я его делаю не плтому что пора, а потому что даня неправильно запушил всё">
+      <created>1681588452812</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1681588452812</updated>
+    </task>
+    <task id="LOCAL-00006" summary="сомнительные изменения(не работающие) для реализации карточки">
+      <created>1681902878517</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1681902878517</updated>
+    </task>
+    <task id="LOCAL-00007" summary="зменения которые сделаны полуавтоматически в попытках всё свести в одно место. Всё попропадало. Отстой">
+      <created>1681906523857</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1681906523857</updated>
+    </task>
+    <task id="LOCAL-00008" summary="это всё ещ именно моя версия, но тут есть логин_штмл">
+      <created>1681906810426</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1681906810426</updated>
+    </task>
+    <task id="LOCAL-00009" summary="формальный коммит для последующего резервирования. Версия дани с рабочей авторизацией">
+      <created>1681907111963</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1681907111963</updated>
+    </task>
+    <task id="LOCAL-00010" summary="титанические изменения во имя карточного героя">
+      <created>1681936565502</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1681936565502</updated>
+    </task>
+    <task id="LOCAL-00011" summary="ну тут уже я совсем много написал">
+      <created>1681943510383</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1681943510383</updated>
+    </task>
+    <task id="LOCAL-00012" summary="это лучшее, что у меня есть на данный момент">
+      <created>1681945512143</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1681945512143</updated>
+    </task>
+    <task id="LOCAL-00013" summary="базу данных забыл прикрепить">
+      <created>1681984947338</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1681984947338</updated>
+    </task>
+    <task id="LOCAL-00014" summary="немного другая реализация, я тут понаследовал от шаблонов">
+      <created>1681991098609</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1681991098609</updated>
+    </task>
+    <task id="LOCAL-00015" summary="тут бд не отслеживалась, ничего не менял">
+      <created>1681991297612</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1681991297612</updated>
+    </task>
+    <task id="LOCAL-00016" summary="косметические переделки перед добавлением изменения">
+      <created>1682186424582</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1682186424582</updated>
+    </task>
+    <task id="LOCAL-00017" summary="можно осторожно заявить, что отображение, изменение и удаление работают">
+      <created>1682208414910</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1682208414910</updated>
+    </task>
+    <task id="LOCAL-00018" summary="всё более менее неплохо, и сейчас я пытаюсь внедрить карты">
+      <created>1682288577718</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1682288577718</updated>
+    </task>
+    <task id="LOCAL-00019" summary="неудачная попытка внеедрения карт">
+      <created>1682434098473</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1682434098473</updated>
+    </task>
+    <task id="LOCAL-00020" summary="всё вроде работает">
+      <created>1682500083763</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1682500083763</updated>
+    </task>
+    <task id="LOCAL-00021" summary="забыл парочку файлов запушить">
+      <created>1682500151270</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1682500151270</updated>
+    </task>
+    <task id="LOCAL-00022" summary="перед слиянием с простыми картами">
+      <created>1682500822067</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1682500822067</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="maps_simple" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/danya" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add base.html, card.html, cards.py, change main.py," />
+    <MESSAGE value="я дописал базовый шаблон, написал к нему расширение  index.html. Это пока заглушка просто, показывет зарегался ли ты. Немного поправио код для регистрации. Там надо его чинить, но это твоё дело. а ещё я переименовал файл с формой регистрации, чтобы не путаться, а то с таким именем уже есть в другой папке" />
+    <MESSAGE value="вроде бы написал все три компонента для функционирования системы добавления карточек. Тут всё примитивно, но система есть. Нужно дописывать всё до оглашённого функционала, пока нет текста, картинок, карты и системы ссылок, но это ненадолго" />
+    <MESSAGE value="пушу card_form и последние изменения, связанные с добавлением журнала" />
+    <MESSAGE value="это первый коммит в этой ветке, я его делаю не плтому что пора, а потому что даня неправильно запушил всё" />
+    <MESSAGE value="сомнительные изменения(не работающие) для реализации карточки" />
+    <MESSAGE value="зменения которые сделаны полуавтоматически в попытках всё свести в одно место. Всё попропадало. Отстой" />
+    <MESSAGE value="это всё ещ именно моя версия, но тут есть логин_штмл" />
+    <MESSAGE value="формальный коммит для последующего резервирования. Версия дани с рабочей авторизацией" />
+    <MESSAGE value="титанические изменения во имя карточного героя" />
+    <MESSAGE value="ну тут уже я совсем много написал" />
+    <MESSAGE value="это лучшее, что у меня есть на данный момент" />
+    <MESSAGE value="базу данных забыл прикрепить" />
+    <MESSAGE value="немного другая реализация, я тут понаследовал от шаблонов" />
+    <MESSAGE value="тут бд не отслеживалась, ничего не менял" />
+    <MESSAGE value="косметические переделки перед добавлением изменения" />
+    <MESSAGE value="можно осторожно заявить, что отображение, изменение и удаление работают" />
+    <MESSAGE value="всё более менее неплохо, и сейчас я пытаюсь внедрить карты" />
+    <MESSAGE value="неудачная попытка внеедрения карт" />
+    <MESSAGE value="всё вроде работает" />
+    <MESSAGE value="забыл парочку файлов запушить" />
+    <MESSAGE value="перед слиянием с простыми картами" />
+    <option name="LAST_COMMIT_MESSAGE" value="перед слиянием с простыми картами" />
+  </component>
+</project>
