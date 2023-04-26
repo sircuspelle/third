@@ -2,8 +2,6 @@ import os
 
 from flask import Flask, redirect, render_template, request, abort
 from flask_login import login_required, LoginManager, login_user, logout_user, current_user
-from werkzeug.utils import secure_filename
-
 from data import db_session
 
 from data.users import User
@@ -77,11 +75,13 @@ def index():
 
 
 @app.route('/news',  methods=['GET', 'POST'])
-@login_required
 def all_news():
     db_sess = db_session.create_session()
-    news = db_sess.query(News).filter((News.user == current_user) | (News.is_private != True))
-    return render_template("all_news.html", news=news)
+    if current_user.is_authenticated:
+        news = db_sess.query(News).filter((News.user == current_user) | (News.is_private != True))
+    else:
+        news = db_sess.query(News).filter(News.is_private != True)
+    return render_template("all_news.html", news=news, title='news')
 
 @app.route('/add_news',  methods=['GET', 'POST'])
 @login_required
