@@ -88,11 +88,11 @@ regions = ["Республика Адыгея (Адыгея)",
 
 
 class PreCreateForm(FlaskForm):
-    region = SelectField('Region', coerce=str, choices=regions, validators=[DataRequired()])
+    region = SelectField('Регион', coerce=str, choices=regions, validators=[DataRequired()])
 
     points_count = IntegerField('Количество остановок в маршруте', validators=[DataRequired(),
                                                                                NumberRange(min=0,
-                                                                                           max=6,
+                                                                                           max=4,
                                                                                            message='подозрительное число остановок')])
 
     submit = SubmitField('Применить')

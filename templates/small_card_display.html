@@ -2,6 +2,8 @@
 
 {% block content_2 %}
 <h1>{{card.title}}</h1>
-<h4>{{card.picture}}</h4>
+{% if card.picture %}
+<img src="/static/img/{{card.picture}}" alt="здесь могла бы быть ваша реклама(что-то пошло не так)">
+{% endif %}
 <p>{{card.txt}}</p>
 {% endblock %}

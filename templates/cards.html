@@ -8,7 +8,7 @@
     <h3 align="left">{{item.creator_obj.nickname}}-{{item.changed_at}}</h3>
     {% if current_user.is_authenticated and current_user.id == item.creator %}
         <div>
-           <a href="/card/{{ item.id }}" class="btn btn-warning">
+           <a href="/start_corrector/{{ item.id }}" class="btn btn-warning">
             Изменить
            </a>
            <a href="/card_delete/{{ item.id }}" class="btn btn-danger">

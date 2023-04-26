@@ -5,11 +5,6 @@
 <br>
 <header>
     <nav class="navbar navbar-dark bg-primary">
-        {% if page == 0 %}
-            <h2 class="btn btn-danger">0</h2>
-        {% else %}
-            <h2 class="btn btn-secondary">0</h2>
-        {% endif %}
         {% for number in count %}
             {% if page == number %}
             <h2 class="btn btn-danger">{{number}}</h2>
