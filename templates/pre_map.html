@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <br>
+
+    <body>
+        <div id="map" style="width: 600px; height: 400px"></div>
+    </body>
+
+    <br>
+
+    {% if chng %}
+
+        <script>
+           function getURL() {
+                window.location.href="/chng_map/" + window.location.href.slice(
+                window.location.href.indexOf("#") + 1);
+           }
+        </script>
+
+        <button type="button" onclick="getURL();">Принять</button>
+
+    {% else %}
+
+        <script>
+           function getURL() {
+                window.location.href="/set_map/" + window.location.href.slice(window.location.href.indexOf("#") + 1);
+           }
+        </script>
+
+        <button type="button" onclick="getURL();">Принять</button>
+    {% endif %}
+
+</form>
+{% endblock %}

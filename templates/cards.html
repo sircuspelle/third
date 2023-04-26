@@ -3,10 +3,18 @@
 {% block content %}
 <h1>Index page</h1>
 {% for item in cards%}
-<a href="/display_card/{{item.id}}"><
-    <h2 align="left">{{item.title}}</h2>
+    <a href="/display_card/{{item.id}}"><h2 align="left">{{item.title}}({{item.loyality_counter}})</h2></a>
     <h3 align="left">{{item.region}}, {{item.place}}</h3>
-    <h3 align="left">{{item.creator}}-{{item.changed_at}}</h3>
-</a>
+    <h3 align="left">{{item.creator_obj.nickname}}-{{item.changed_at}}</h3>
+    {% if current_user.is_authenticated and current_user.id == item.creator %}
+        <div>
+           <a href="/start_corrector/{{ item.id }}" class="btn btn-warning">
+            Изменить
+           </a>
+           <a href="/card_delete/{{ item.id }}" class="btn btn-danger">
+            Удалить
+            </a>
+        </div>
+    {% endif %}
 {% endfor %}
 {% endblock %}

@@ -1,5 +1,8 @@
-from flask import Flask, redirect, render_template
+import os
+
+from flask import Flask, redirect, render_template, request, abort
 from flask_login import login_required, LoginManager, login_user, logout_user, current_user
+from werkzeug.utils import secure_filename
 
 from data import db_session
 
@@ -10,6 +13,30 @@ from forms.authorizer_forms import RegisterForm, LoginForm
 
 from forms.card_form import MainCardsForm, SmallCardsForm
 from forms.pre_create_form import PreCreateForm
+
+import requests
+
+
+def region_coords(name):
+    geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={name}&format=json"
+
+    # Выполняем запрос.
+    response = requests.get(geocoder_request)
+    if response:
+        # Преобразуем ответ в json-объект
+        json_response = response.json()
+
+        # Получаем первый топоним из ответа геокодера.
+        # Согласно описанию ответа, он находится по следующему пути:
+        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+        # Координаты центра топонима:
+        toponym_coodrinates = toponym["Point"]["pos"]
+
+        return ','.join(toponym_coodrinates.split()[::-1])
+    else:
+        print("Ошибка выполнения запроса:")
+        print(geocoder_request)
+        print("Http статус:", response.status_code, "(", response.reason, ")")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -34,10 +61,13 @@ def logout():
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    cards = db_sess.query(Card).all()
+    cards = sorted(db_sess.query(Card).all(), key=lambda x: x.loyality_counter, reverse=True)
+
+    # db_sess.close()
+
     if len(cards) > 5:
         cards = cards[:5]
-    return render_template("index.html", title='indexpage', cards=cards)
+    return render_template("index.html", title='Главная', cards=cards)
 
 
 @app.route("/news")
@@ -48,8 +78,11 @@ def show_news():
 @app.route("/cards")
 def show_cards():
     db_sess = db_session.create_session()
-    cards = db_sess.query(Card).all()
-    return render_template("cards.html", title='catalogue', cards=cards)
+    cards = sorted(db_sess.query(Card).all(), key=lambda x: x.loyality_counter, reverse=True)
+
+    # db_sess.close()
+
+    return render_template("cards.html", title='Каталог', cards=cards)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -74,6 +107,7 @@ def reqister():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
+        db_sess.close()
         return redirect('/')
     return render_template('register.html', title='Регистрация', form=form)
 
@@ -84,6 +118,7 @@ def login():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
+        db_sess.close()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
@@ -93,8 +128,8 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
-cards = None
-points = 0
+cards = Card()
+points = []
 
 
 @app.route('/new_card_pre', methods=['GET', 'POST'])
@@ -103,39 +138,113 @@ def start_to_add_cards():
     pre_form = PreCreateForm()
     if pre_form.validate_on_submit():
         global cards, points
+
         cards = Card()
         cards.points_count = pre_form.points_count.data
         cards.region = pre_form.region.data
 
-        points = [i for i in range(1, cards.points_count * 2 + 1)]
+        points = [i for i in range(0, cards.points_count * 2 + 1)]
 
-        return redirect('/new_card')
+        return redirect(
+        f'''/new_card_pre_map#type=hybrid&center={region_coords(cards.region)}&zoom=9''')
+
     return render_template('pre_card.html', title='Добавление Маршрута',
                            form=pre_form)
 
+@app.route('/new_card_pre_map', methods=['GET', 'POST'])
+def add_map():
+    return render_template('pre_map.html', title='Добавление Карты', chng=False)
+
+@app.route('/set_map/<string:arg>')
+def set_map(arg):
+    global cards
+    cards.map = arg
+    return redirect(f'''/new_card''')
 
 @app.route('/new_card', methods=['GET', 'POST'])
 def add_cards():
     global cards, points
     form = MainCardsForm()
     if form.validate_on_submit():
+
         db_sess = db_session.create_session()
+
+        last = db_sess.query(Card).all()
+
+        if last:
+            cards.id = last[-1].id + 1
+        else:
+            cards.id = 1
+
+        # need to check
+        db_sess.close()
 
         cards.title = form.title.data
         cards.place = form.place.data
         cards.longest = form.longest.data
-        ##### пропиши пользователя
         cards.creator = current_user.id
 
-        db_sess.add(cards)
-        db_sess.commit()
-        cards = {'id': cards.id}
-        return redirect('/create_card/1')
+        return redirect('/new_card/page/1')
     return render_template('main_card.html', title='Добавление Маршрута', count=points,
-                           form=form)
+                           form=form, page=0)
+
+@app.route('/start_corrector/<int:id>', methods=['GET', 'POST'])
+def starter(id):
+    global cards, points
+
+    db_sess = db_session.create_session()
+    cards = db_sess.query(Card).filter(Card.id == id,
+                                       Card.creator == current_user.id
+                                       ).first()
+
+    if cards:
+        points = [i for i in range(0, cards.points_count * 2 + 1)]
+    else:
+        abort(404)
+
+    return redirect(f'/old_card_pre_map#{cards.map}')
+
+@app.route('/old_card_pre_map', methods=['GET', 'POST'])
+@login_required
+def start_to_chng_map():
+    return render_template('pre_map.html', title='Изменение Карты', chng=True)
+
+@app.route('/chng_map/<string:arg>')
+def chng_map(arg):
+    global cards
+    cards.map = arg
+    return redirect(f'''/card/{cards.id}''')
 
 
-@app.route('/create_card/<int:number>', methods=['GET', 'POST'])
+@app.route('/card/<int:id>', methods=['GET', 'POST'])
+@login_required
+def change_cards(id):
+    global cards, points
+
+    form = MainCardsForm()
+
+    if request.method == "GET":
+        if cards:
+            form.title.data = cards.title
+            form.place.data = cards.place
+            form.longest.data = cards.longest
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        if cards:
+            cards.title = form.title.data
+            cards.place = form.place.data
+            cards.longest = form.longest.data
+        return redirect('/card/page/1')
+    return render_template('main_card.html', title='Изменение Маршрута', count=points,
+                           form=form, delta=True, page=0)
+
+
+def size(el):
+    return el.stream.seek(0, os.SEEK_END)
+
+
+@app.route('/new_card/page/<int:number>', methods=['GET', 'POST'])
 def add_page(number):
     global cards, points
     form = SmallCardsForm()
@@ -144,59 +253,187 @@ def add_page(number):
         card = Card_Page()
         card.txt = form.text.data
         card.title = form.title.data
-        card.picture = form.picture.data
 
-        #####
-        card.mother = cards['id']
+        file = form.picture.data
+        if file:
+            card.picture = f'static/img/{cards.id}_{number}.{file.filename.split(".")[-1]}'
+            file.save(card.picture)
+
+        card.mother = cards.id
 
         db_sess.add(card)
         db_sess.commit()
 
         if number != points[-1]:
-            return redirect(f'/create_card/{number + 1}')
+            return redirect(f'/new_card/page/{number + 1}')
         else:
-            ### ТУТ надо дописать проверки перед добавлением
+            db_sess.add(cards)
+            db_sess.commit()
+            db_sess.close()
             return redirect('/')
 
     if number % 2:
-        return render_template('small_card.html', title=f'шаг {number}',
-                               head=f'Расскажи о точке остановки {number}',
+        return render_template('small_card.html', title=f'шаг {number}', page=number,
+                               head=f'Расскажи о точке остановки №{number}',
                                count=points,
                                form=form)
     else:
-        return render_template('small_card.html', title=f'шаг {number}',
-                               head=f'Расскажи, как добирался от пункта {number - 1} до следующей остановки',
+        if number == points[-1]:
+            return render_template('small_card.html', title=f'шаг {number}', page=number,
+                                   head=f'Расскажи, как добираться в начало пути',
+                                   count=points, delta=True,
+                                   form=form)
+        return render_template('small_card.html', title=f'шаг {number}', page=number,
+                               head=f'Расскажи, как добирался от пункта №{number - 1} до следующей остановки',
                                count=points,
                                form=form)
 
 
-heads_in_card = 0
-
-
-@app.route("/display_card/<int:number>")
-def display_card(number):
-    global heads_in_card, cards
+@app.route('/card/page/<int:number>', methods=['GET', 'POST'])
+def change_page(number):
+    global cards, points
+    form = SmallCardsForm()
 
     db_sess = db_session.create_session()
-    cards = db_sess.query(Card).filter(Card.id == number).first()
+    card = db_sess.query(Card_Page).filter(Card_Page.mother == cards.id).all()[number - 1]
+
+    if request.method == "GET":
+        if card:
+            form.title.data = card.title
+            form.text.data = card.txt
+            form.picture.data = card.picture
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        if card:
+            card.txt = form.text.data
+            card.title = form.title.data
+
+
+            file = form.picture.data
+            if file:
+                card.picture = f'{cards.id}_{number}.{file.filename.split(".")[-1]}'
+                file.save(f'static/img/{cards.id}_{number}.{file.filename.split(".")[-1]}')
+
+            db_sess.add(card)
+            db_sess.commit()
+
+            if number != points[-1]:
+                return redirect(f'/card/page/{number + 1}')
+            else:
+                db_sess.add(cards)
+                db_sess.commit()
+
+                #
+                db_sess.close()
+
+                return redirect('/')
+
+    if number % 2:
+        return render_template('small_card.html', title=f'шаг {number}', page=number,
+                               head=f'Расскажи о точке остановки №{number}',
+                               count=points,
+                               form=form, delta=True)
+    else:
+        if number == points[-1]:
+            return render_template('small_card.html', title=f'шаг {number}', page=number,
+                                   head=f'Расскажи, как добираться в начало пути',
+                                   count=points, delta=True,
+                                   form=form)
+        return render_template('small_card.html', title=f'шаг {number}', page=number,
+                               head=f'Расскажи, как добирался от пункта №{number - 1} до следующей остановки',
+                               count=points, delta=True,
+                               form=form)
+
+
+# heads_in_card = 0
+@app.route("/display_card/<int:id>")
+def load_card(id):
+    global points, cards
+
+    db_sess = db_session.create_session()
+    cards = db_sess.query(Card).filter(Card.id == id).first()
+
     if cards:
-        heads_in_card = [i for i in range(1, cards.points_count * 2 + 1)]
-        return render_template('main_card_display.html', cards=cards,
-                               title=f'{cards.title}', count=heads_in_card)
+        points = [i for i in range(1, cards.points_count * 2 + 1)]
+
+        return redirect(f'/display_cards#{cards.map}')
+
+    abort(404)
+
+
+
+@app.route("/display_cards")
+def display_card():
+    global points, cards
+
+    db_sess = db_session.create_session()
+    cards = db_sess.query(Card).filter(Card.id == cards.id).first()
+
+    if cards:
+        return render_template('main_card_display.html', cards=cards, page=0,
+                               title=f'{cards.title}', count=points)
+    abort(404)
 
 
 @app.route("/display_card/page/<int:number>")
 def display_page(number):
-    global heads_in_card, cards
+    global points, cards
 
     db_sess = db_session.create_session()
     card = db_sess.query(Card_Page).filter(Card_Page.mother == cards.id).all()
+
     if card:
         card = card[number - 1]
-        return render_template('small_card_display.html', card=card, cards=cards,
-                               title=f'{card.title}', count=heads_in_card)
+        return render_template('small_card_display.html', card=card, cards=cards, page=number,
+                               title=f'{card.title}', count=points)
     else:
         return """неполноценная карточка"""
+
+
+@app.route('/card_delete/<int:id>', methods=['GET', 'POST'])
+def cards_delete(id):
+    db_sess = db_session.create_session()
+    cards = db_sess.query(Card).filter(Card.id == id,
+                                       Card.creator == current_user.id
+                                       ).first()
+    if cards:
+        db_sess.delete(cards)
+
+        cards = db_sess.query(Card_Page).filter(Card_Page.mother == id,
+                                                Card.creator == current_user.id
+                                                ).all()
+        for card in cards:
+            db_sess.delete(card)
+
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/cards')
+
+
+@app.route('/like/<string:arg>', methods=['GET'])
+def cards_like(arg):
+    id, number = map(int, arg.split('-'))
+
+    db_sess = db_session.create_session()
+    card = db_sess.query(Card).filter(Card.id == id).first()
+
+    if card:
+        if str(current_user.id) not in str(card.loyality).split():
+            card.loyality = str(card.loyality) + ' ' + str(current_user.id)
+
+            card.loyality_counter += 1
+            card.creator_obj.loyality += 1
+
+            db_sess.commit()
+    else:
+        abort(404)
+
+    if number == 0:
+        return redirect(f"/display_card/{id}")
+    else:
+        return redirect(f"/display_card/page/{number}")
 
 
 def main():

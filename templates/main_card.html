@@ -1,38 +1,44 @@
 {% extends "creator.html" %}
 
 {% block content_2 %}
+{% if delta %}
+<h1>Изменение карточки</h1>
+{% else %}
 <h1>Создание карточки</h1>
+{% endif %}
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>
         {{ form.title(class="form-control") }}<br>
         {% for error in form.title.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
     </p>
     <p>
         {{ form.place.label }}<br>
         {{ form.place(class="form-control") }}<br>
         {% for error in form.place.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
     </p>
     <p>
         {{ form.longest.label }}<br>
         {{ form.longest(class="form-control") }}<br>
         {% for error in form.longest.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
     </p>
 
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    <p> {{ form.submit(type="submit", class="btn btn-primary") }}</p>
+
+
     {{message}}
 </form>
 {% endblock %}

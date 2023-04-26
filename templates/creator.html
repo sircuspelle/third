@@ -2,11 +2,15 @@
 
 {% block content %}
 
+<br>
 <header>
     <nav class="navbar navbar-dark bg-primary">
-      <h2><a href = "/new_card" class="btn btn-secondary">0</a></h2>
         {% for number in count %}
-        <h2><a href="/create_card/{{number}}" class="btn btn-secondary">{{number}}</a></h2>
+            {% if page == number %}
+            <h2 class="btn btn-danger">{{number}}</h2>
+            {% else %}
+            <h2 class="btn btn-secondary">{{number}}</h2>
+            {% endif %}
         {% endfor %}
     </nav>
 </header>
