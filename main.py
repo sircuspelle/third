@@ -142,6 +142,13 @@ def reading_news(card_id, news_id):
     return render_template('reading_news.html', news=news)
 
 
+@app.route('/news', methods=['GET', 'POST'])
+@login_required
+def all_news():
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter((News.user == current_user) | (News.is_private != True))
+
+
 @app.route('/card_<int:card_id>/forum', methods=['GET', 'POST'])
 @login_required
 def forum(card_id):
