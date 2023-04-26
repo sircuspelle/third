@@ -8,11 +8,14 @@ from data import db_session
 
 from data.users import User
 from data.cards import Card, Card_Page
+from data.news import News
 
 from forms.authorizer_forms import RegisterForm, LoginForm
 
 from forms.card_form import MainCardsForm, SmallCardsForm
 from forms.pre_create_form import PreCreateForm
+from forms.news import NewsForm
+from forms.forum import ForumForm
 
 import requests
 
@@ -45,6 +48,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+username = ''
+
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -67,12 +73,131 @@ def index():
 
     if len(cards) > 5:
         cards = cards[:5]
-    return render_template("index.html", title='Главная', cards=cards)
+    return render_template("index.html", cards=cards)
 
 
-@app.route("/news")
-def show_news():
-    return """Тут пока пусто, но мы уже почти это исправили"""
+@app.route('/card_<int:card_id>/news',  methods=['GET', 'POST'])
+@login_required
+def card_news(card_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != True))
+    card = db_sess.query(Card).filter(Card.id == card_id).first()
+    return render_template("card_news.html", news=news, card=card)
+
+
+@app.route('/card_<int:card_id>/add_news',  methods=['GET', 'POST'])
+@login_required
+def add_news(card_id):
+    form = NewsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = News()
+        news.title = form.title.data
+        if len(form.content.data) > 120:
+            news.preview = form.content.data[:120:] + "..."
+            news.content = form.content.data
+        else:
+            news.content = form.content.data
+        news.is_private = form.is_private.data
+        news.card_id = card_id
+        current_user.news.append(news)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect(f'/card_{card_id}/news')
+    return render_template('news.html', title='Добавление новости',
+                           form=form)
+
+
+@app.route('/card_<int:card_id>/edit_news/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+def edit_news(card_id, news_id):
+    form = NewsForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(News.id == news_id,
+                                          News.user == current_user
+                                          ).first()
+        if news:
+            form.title.data = news.title
+            form.content.data = news.content
+            form.is_private.data = news.is_private
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(News.id == news_id,
+                                          News.user == current_user
+                                          ).first()
+        if news:
+            news.title = form.title.data
+            if len(form.content.data) > 120:
+                news.preview = form.content.data[:120:] + "..."
+                news.content = form.content.data
+            else:
+                news.preview = ''
+                news.content = form.content.data
+            news.is_private = form.is_private.data
+            db_sess.commit()
+            return redirect(f'/card_{card_id}/news')
+        else:
+            abort(404)
+    return render_template('news.html',
+                           title='Редактирование новости',
+                           form=form
+                           )
+
+
+@app.route('/card_<int:card_id>/news_delete/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+def news_delete(card_id, news_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.id == news_id,
+                                      News.user == current_user
+                                      ).first()
+    if news:
+        db_sess.delete(news)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect(f'/card_{card_id}/news')
+
+
+@app.route('/card_<int:card_id>/reading_news/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+def reading_news(card_id, news_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.id == news_id,
+                                      News.user == current_user
+                                      ).first()
+    return render_template('reading_news.html', news=news)
+
+
+@app.route('/card_<int:card_id>/forum', methods=['GET', 'POST'])
+@login_required
+def forum(card_id):
+    global username
+    form = ForumForm()
+    if username:
+        form.content.data = f'@{username}, '
+    if form.submit.data:
+        with open(f'files/forum{card_id}.txt', "a", encoding="utf8") as file:
+            file.write(f"{form.content.data};{current_user.nickname};{current_user.id}\n")
+    try:
+        with open(f'files/forum{card_id}.txt', "r", encoding="utf8") as file:
+            content = file.readlines()
+            content = [i.rsplit(';', 2) for i in content]
+    except:
+        with open(f'files/forum{card_id}.txt', "w", encoding="utf8") as file:
+            content = []
+    return render_template('forum.html', title='Форум', form=form, content=content, card_id=card_id)
+
+
+@app.route('/card_<int:card_id>/forum/<nickname>', methods=['GET', 'POST'])
+@login_required
+def select_name(card_id, nickname):
+    global username
+    username = nickname
+    return redirect(f'/card_{card_id}/forum')
 
 
 @app.route("/cards")
@@ -139,7 +264,6 @@ def start_to_add_cards():
     if pre_form.validate_on_submit():
         global cards, points
 
-        cards = Card()
         cards.points_count = pre_form.points_count.data
         cards.region = pre_form.region.data
 
@@ -191,6 +315,7 @@ def add_cards():
 @app.route('/start_corrector/<int:id>', methods=['GET', 'POST'])
 def starter(id):
     global cards, points
+    form = MainCardsForm()
 
     db_sess = db_session.create_session()
     cards = db_sess.query(Card).filter(Card.id == id,

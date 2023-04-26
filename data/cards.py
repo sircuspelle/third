@@ -23,6 +23,7 @@ class Card(SqlAlchemyBase):
                                     sqlalchemy.ForeignKey("users.id"), default=1)
     creator_obj = orm.relationship('User')
 
+
 class Card_Page(SqlAlchemyBase):
     __tablename__ = 'small_cards'
 

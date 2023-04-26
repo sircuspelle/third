@@ -20,6 +20,8 @@ class User(SqlAlchemyBase, UserMixin):
     loyality = sqlalchemy.Column(sqlalchemy.Integer, default=0)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
+    news = orm.relationship("News", back_populates='user')
+
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
