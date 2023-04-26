@@ -86,12 +86,12 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-dark bg-primary">
-        <h1><a href="/" style="color:white;">Explorer</a></h1>
-        <h2><a href="/cards" class="btn btn-secondary">Маршруты</a></h2>
-        <h2><a href="/news" class="btn btn-secondary">Новости</a></h2>
+    <nav class="navbar navbar-dark bg-dark">
+        <h1><a href="/" style="color:white;" class="nav-item nav-link">Explorer</a></h1>
+        <h2><a href="/cards" style="color:white;" class="nav-item nav-link">Маршруты</a></h2>
+        <h2><a href="/news" style="color:white;" class="nav-item nav-link">Новости</a></h2>
         {% if current_user.is_authenticated %}
-            <h2><a href="/new_card_pre" class="btn btn-secondary">Добавить маршрут</a></h2>
+            <h2><a href="/new_card_pre" style="color:white;" class="nav-item nav-link">Добавить маршрут</a></h2>
         {% endif %}
         {% if current_user.is_authenticated %}
             <a class="navbar-brand" href="/logout">{{ current_user.nickname }}</a>

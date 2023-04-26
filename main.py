@@ -77,7 +77,6 @@ def index():
 
 
 @app.route('/card_<int:card_id>/news',  methods=['GET', 'POST'])
-@login_required
 def card_news(card_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != True))
@@ -173,15 +172,14 @@ def reading_news(card_id, news_id):
 
 
 @app.route('/card_<int:card_id>/forum', methods=['GET', 'POST'])
-@login_required
 def forum(card_id):
     global username
     form = ForumForm()
-    if username:
-        form.content.data = f'@{username}, '
     if form.submit.data:
         with open(f'files/forum{card_id}.txt', "a", encoding="utf8") as file:
             file.write(f"{form.content.data};{current_user.nickname};{current_user.id}\n")
+    if username:
+        form.content.data = f'@{username}, '
     try:
         with open(f'files/forum{card_id}.txt', "r", encoding="utf8") as file:
             content = file.readlines()

@@ -3,8 +3,10 @@
 {% block content %}
 <h1>Index page</h1>
 {% for item in cards%}
-    <a href="/display_card/{{item.id}}"><h2 align="left">{{item.title}}({{item.loyality_counter}})</h2></a>
+    <div class="card text-bg-success mb-3" style="width: 80rem; background_color: #CBD1CE;">
+    <a href="/display_card/{{item.id}}"><h2 class="card-title" align="left">{{item.title}}({{item.loyality_counter}})</h2></a>
     <h3 align="left">{{item.region}}, {{item.place}}</h3>
+        <h3 align="left">Продолжительность около {{item.longest}} часов(-а)</h3>
     <h3 align="left">{{item.creator_obj.nickname}}-{{item.changed_at}}</h3>
     {% if current_user.is_authenticated and current_user.id == item.creator %}
         <div>
@@ -16,5 +18,6 @@
             </a>
         </div>
     {% endif %}
+    </div>
 {% endfor %}
 {% endblock %}

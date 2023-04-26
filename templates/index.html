@@ -1,16 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Index page</h1>
-{% for item in cards%}
-{% if loop.index % 2 == 0 %}
-    <a href="/display_card/{{item.id}}"><h2 align="left">{{item.title}}({{item.loyality_counter}})</h2></a>
-    <h3 align="left">{{item.region}}, {{item.place}}</h3>
-    <h3 align="left">{{item.creator}}-{{item.changed_at}}</h3>
- {% else %}
-    <a href="/display_card/{{item.id}}"><h2 align="right">{{item.title}}({{item.loyality_counter}})</h2></a>
-    <h3 align="right">{{item.region}}, {{item.place}}</h3>
-    <h3 align="right">{{item.creator}}-{{item.changed_at}}</h3>
- {% endif %}
-{% endfor %}
+<br>
+<table width="100%">
+    {% for item in cards%}
+    <tr>
+        {% if loop.index % 2 == 0 %}
+        <td align="left">
+            <div class="card text-bg-success mb-3" style="width: 25rem;">
+                <a href="/display_card/{{item.id}}"><h2 align="center" class="card-title">{{item.title}}({{item.loyality_counter}})</h2></a>
+                <h3 align="center" class="card-text" >{{item.region}}, {{item.place}}</h3>
+                <h3 align="center">Продолжительность около {{item.longest}} часов(-а)</h3>
+                <h3 align="center" class="card-text" >{{item.creator_obj.name}}-{{item.changed_at}}</h3>
+            </div>
+        </td>
+         {% else %}
+        <td align="right">
+            <div class="card text-bg-success mb-3" style="width: 25rem;">
+                <div class="card-body">
+                <a href="/display_card/{{item.id}}"><h2 class="card-title" align="center" >{{item.title}}({{item.loyality_counter}})</h2></a>
+                <h3 align="center" class="card-text" >{{item.region}}, {{item.place}}</h3>
+                <h3 align="center">Продолжительность около {{item.longest}} часов(-а)</h3>
+                <h3 align="center" class="card-text" >{{item.creator}}-{{item.changed_at}}</h3>
+                </div>
+            </div>
+        </td>
+         {% endif %}
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
