@@ -40,8 +40,9 @@
     <h2><a href=/like/{{cards.id}}-{{page}} class="btn btn-success">Мне нравится</a></h2>
 {% endif %}
 
-<h2><a href=/like/{{cards.id}}-{{page}} class="btn btn-info">Новости</a></h2>
 
-<h2><a href=/like/{{cards.id}}-{{page}} class="btn btn-info">Форум</a></h2>
+<h2><a href="/card_{{cards.id}}/news" class="btn btn-info">Новости</a></h2>
+
+<h2><a href="/card_{{cards.id}}/forum" class="btn btn-info">Форум</a></h2>
 
 {% endblock %}
