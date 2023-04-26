@@ -76,6 +76,99 @@ def index():
     return render_template("index.html", cards=cards)
 
 
+@app.route('/news',  methods=['GET', 'POST'])
+@login_required
+def all_news():
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter((News.user == current_user) | (News.is_private != True))
+    return render_template("all_news.html", news=news)
+
+@app.route('/add_news',  methods=['GET', 'POST'])
+@login_required
+def add_news():
+    form = NewsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = News()
+        news.title = form.title.data
+        if len(form.content.data) > 120:
+            news.preview = form.content.data[:120:] + "..."
+            news.content = form.content.data
+        else:
+            news.content = form.content.data
+        news.is_private = form.is_private.data
+        current_user.news.append(news)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect(f'/news')
+    return render_template('news.html', title='Добавление новости',
+                           form=form)
+
+
+@app.route('/edit_news/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+def edit_news(news_id):
+    form = NewsForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(News.id == news_id,
+                                          News.user == current_user
+                                          ).first()
+        if news:
+            form.title.data = news.title
+            form.content.data = news.content
+            form.is_private.data = news.is_private
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        news = db_sess.query(News).filter(News.id == news_id,
+                                          News.user == current_user
+                                          ).first()
+        if news:
+            news.title = form.title.data
+            if len(form.content.data) > 120:
+                news.preview = form.content.data[:120:] + "..."
+                news.content = form.content.data
+            else:
+                news.preview = ''
+                news.content = form.content.data
+            news.is_private = form.is_private.data
+            db_sess.commit()
+            return redirect(f'/news')
+        else:
+            abort(404)
+    return render_template('news.html',
+                           title='Редактирование новости',
+                           form=form
+                           )
+
+
+@app.route('/news_delete/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+def news_delete(news_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.id == news_id,
+                                      News.user == current_user
+                                      ).first()
+    if news:
+        db_sess.delete(news)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect(f'/news')
+
+
+@app.route('/reading_news/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+def reading_news(news_id):
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.id == news_id,
+                                      News.user == current_user
+                                      ).first()
+    return render_template('reading_news.html', news=news)
+
+
 @app.route('/card_<int:card_id>/news',  methods=['GET', 'POST'])
 def card_news(card_id):
     db_sess = db_session.create_session()
@@ -86,7 +179,7 @@ def card_news(card_id):
 
 @app.route('/card_<int:card_id>/add_news',  methods=['GET', 'POST'])
 @login_required
-def add_news(card_id):
+def add_news_card(card_id):
     form = NewsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -109,7 +202,7 @@ def add_news(card_id):
 
 @app.route('/card_<int:card_id>/edit_news/<int:news_id>', methods=['GET', 'POST'])
 @login_required
-def edit_news(card_id, news_id):
+def edit_card_news(card_id, news_id):
     form = NewsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
@@ -148,7 +241,7 @@ def edit_news(card_id, news_id):
 
 @app.route('/card_<int:card_id>/news_delete/<int:news_id>', methods=['GET', 'POST'])
 @login_required
-def news_delete(card_id, news_id):
+def card_news_delete(card_id, news_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == news_id,
                                       News.user == current_user
@@ -163,7 +256,7 @@ def news_delete(card_id, news_id):
 
 @app.route('/card_<int:card_id>/reading_news/<int:news_id>', methods=['GET', 'POST'])
 @login_required
-def reading_news(card_id, news_id):
+def reading_card_news(card_id, news_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == news_id,
                                       News.user == current_user
