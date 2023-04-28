@@ -1,5 +1,0 @@
-fhutynbyf;nickname;1
-@nickname, как дела?;nickname;1
-@nickname, нормально.;nickname;1
-@nickname, у тебя как?;nickname;1
-@nickname, да тоже ничего;nickname;1
