@@ -58,9 +58,9 @@ def all_news():
     db_sess = db_session.create_session()
     if current_user.is_authenticated:
         news = db_sess.query(News).filter((News.user == current_user) | (
-                News.is_private is not True))
+                News.is_private != 1))
     else:
-        news = db_sess.query(News).filter(News.is_private is not True)
+        news = db_sess.query(News).filter(News.is_private != 1)
     return render_template("all_news.html", news=news, title='Новости')
 
 
@@ -73,7 +73,6 @@ def show_cards():
 
 @app.route('/add_news', methods=['GET', 'POST'])
 @login_required
-def add_news():
 def add_news(card_id=None):
     form = NewsForm()
     if form.validate_on_submit():
@@ -160,14 +159,7 @@ def reading_news(news_id):
     return render_template('reading_news.html', news=news)
 
 
-@app.route('/news',  methods=['GET', 'POST'])
-def all_news():
-    db_sess = db_session.create_session()
-    try:
-        news = db_sess.query(News).filter((News.user == current_user) | (News.is_private != True))
-    except:
-        news = db_sess.query(News).filter((News.is_private != True))
-    return render_template("all_news.html", news=news)
+
 
 
 @app.route('/add_news',  methods=['GET', 'POST'])

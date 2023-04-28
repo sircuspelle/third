@@ -1,0 +1,4 @@
+не маршрут, а полный швах;nickname;1;0;1
+@nickname, ты не прав;nickname;1;1;2
+я прав;nickname;1;0;3
+@nickname, идиот, ты не мне отвечаешь;nickname;1;1;4
