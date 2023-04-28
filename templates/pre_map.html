@@ -2,39 +2,37 @@
 
 {% block content %}
 
-    <br>
+<br>
 
-    <h1>Наведите на карте нужную область</h1>
+<h1>Наведите на карте нужную область</h1>
 
-    <br>
+<br>
 
-    <body>
-        <div id="map" style="width: 600px; height: 400px"></div>
-    </body>
+<body>
+<div id="map" style="width: 600px; height: 400px"></div>
+</body>
 
-    <br>
+<br>
 
-    {% if chng %}
+{% if chng %}
 
-        <script>
+<script>
            function getURL() {
-                window.location.href="/chng_map/" + window.location.href.slice(
-                window.location.href.indexOf("#") + 1);
+                window.location.href="/set_map/" + window.location.href.slice(
+                window.location.href.indexOf("#") + 1) + "/1";
            }
-        </script>
 
-        <button type="button" onclick="getURL();">Принять</button>
+</script>
 
-    {% else %}
+{% else %}
 
-        <script>
+<script>
            function getURL() {
-                window.location.href="/set_map/" + window.location.href.slice(window.location.href.indexOf("#") + 1);
+                window.location.href="/set_map/" + window.location.href.slice(window.location.href.indexOf("#") + 1) + "/0";
            }
-        </script>
 
-        <button type="button" onclick="getURL();">Принять</button>
-    {% endif %}
-
+</script>
+{% endif %}
+<button type="button" onclick="getURL();">Принять</button>
 </form>
 {% endblock %}

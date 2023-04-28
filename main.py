@@ -1,5 +1,3 @@
-import os
-
 from flask import Flask, redirect, render_template, request, abort
 from flask_login import login_required, LoginManager, login_user, logout_user, current_user
 from data import db_session
@@ -15,17 +13,13 @@ from forms.pre_create_form import PreCreateForm
 from forms.news import NewsForm
 from forms.forum import ForumForm
 
-from help_functions import region_coords
-
-import requests
-
+from help_functions import region_coords, base_com_close
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 username = ''
 
@@ -46,26 +40,30 @@ def logout():
 @app.route("/")
 def index():
     db_sess = db_session.create_session()
-    cards = sorted(db_sess.query(Card).all(), key=lambda x: x.loyality_counter, reverse=True)[:5]
-    return render_template("index.html", cards=cards, title='Главная')
+    five_cards = sorted(db_sess.query(Card).all(), key=lambda x: x.loyality_counter,
+                        reverse=True)[:5]
+    return render_template("index.html", cards=five_cards, title='Главная')
 
 
-@app.route('/news',  methods=['GET', 'POST'])
+@app.route('/news', methods=['GET', 'POST'])
 def all_news():
     db_sess = db_session.create_session()
     if current_user.is_authenticated:
-        news = db_sess.query(News).filter((News.user == current_user) | (News.is_private != True))
+        news = db_sess.query(News).filter((News.user == current_user) | (
+                News.is_private is not True))
     else:
-        news = db_sess.query(News).filter(News.is_private != True)
-    return render_template("all_news.html", news=news, title='news')
+        news = db_sess.query(News).filter(News.is_private is not True)
+    return render_template("all_news.html", news=news, title='Новости')
+
 
 @app.route("/cards")
 def show_cards():
     db_sess = db_session.create_session()
-    cards = sorted(db_sess.query(Card).all(), key=lambda x: x.loyality_counter, reverse=True)
-    return render_template("cards.html", title='Каталог', cards=cards)
+    all_cards = sorted(db_sess.query(Card).all(), key=lambda x: x.loyality_counter, reverse=True)
+    return render_template("cards.html", title='Каталог', cards=all_cards)
 
-@app.route('/add_news',  methods=['GET', 'POST'])
+
+@app.route('/add_news', methods=['GET', 'POST'])
 @login_required
 def add_news():
     form = NewsForm()
@@ -79,11 +77,11 @@ def add_news():
         news.is_private = form.is_private.data
         current_user.news.append(news)
         db_sess.merge(current_user)
-        db_sess.commit()
-        db_sess.close()
+        base_com_close(db_sess)
         return redirect(f'/news')
     return render_template('news.html', title='Добавление новости',
                            form=form)
+
 
 @app.route('/edit_news/<int:news_id>', methods=['GET', 'POST'])
 @login_required
@@ -114,8 +112,7 @@ def edit_news(news_id):
                 news.preview = ''
                 news.content = form.content.data
             news.is_private = form.is_private.data
-            db_sess.commit()
-            db_sess.close()
+            base_com_close(db_sess)
             return redirect(f'/news')
         else:
             abort(404)
@@ -134,11 +131,9 @@ def news_delete(news_id):
                                       ).first()
     if news:
         db_sess.delete(news)
-        db_sess.commit()
-        db_sess.close()
+        base_com_close(db_sess)
     else:
         abort(404)
-        db_sess.close()
     return redirect('/news')
 
 
@@ -149,20 +144,22 @@ def reading_news(news_id):
     return render_template('reading_news.html', news=news)
 
 
-@app.route('/card_<int:card_id>/news',  methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/news', methods=['GET', 'POST'])
 def card_news(card_id):
     db_sess = db_session.create_session()
 
     if current_user.is_authenticated:
-        news = db_sess.query(News).filter((News.card_id == card_id), ((News.user == current_user) | (News.is_private != True))).all()
+        news = db_sess.query(News).filter((News.card_id == card_id), (
+                (News.user == current_user) | (News.is_private is not True))).all()
     else:
-        news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != True)).all()
+        news = db_sess.query(News).filter((News.card_id == card_id),
+                                          (News.is_private is not True)).all()
 
     empty = bool(news)
     return render_template("card_news.html", news=news, card_id=card_id, empty=empty)
 
 
-@app.route('/card_<int:card_id>/add_news',  methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/add_news', methods=['GET', 'POST'])
 @login_required
 def add_news_card(card_id):
     form = NewsForm()
@@ -262,8 +259,8 @@ def forum(card_id):
         with open(f'files/forum{card_id}.txt', "r", encoding="utf8") as file:
             content = file.readlines()
             content = [i.rsplit(';', 2) for i in content]
-    except:
-        with open(f'files/forum{card_id}.txt', "w", encoding="utf8") as file:
+    except Exception:
+        with open(f'files/forum{card_id}.txt', "w", encoding="utf8"):
             content = []
     return render_template('forum.html', title='Форум', form=form, content=content, card_id=card_id)
 
@@ -330,46 +327,34 @@ points = []
 @app.route('/new_card_pre', methods=['GET', 'POST'])
 @login_required
 def start_to_add_cards():
+    global cards, points
+    cards = Card()
     pre_form = PreCreateForm()
-    if pre_form.validate_on_submit():
-        global cards, points
 
+    if pre_form.validate_on_submit():
         cards.points_count = pre_form.points_count.data
         cards.region = pre_form.region.data
 
         points = [i for i in range(0, cards.points_count * 2 + 1)]
 
         return redirect(
-        f'''/new_card_pre_map#type=hybrid&center={region_coords(cards.region)}&zoom=9''')
+            f'''/card_pre_map/0#type=hybrid&center={region_coords(cards.region)}&zoom=9''')
 
     return render_template('pre_card.html', title='Добавление Маршрута',
                            form=pre_form)
 
-@app.route('/new_card_pre_map', methods=['GET', 'POST'])
-def add_map():
-    return render_template('pre_map.html', title='Добавление Карты', chng=False)
-
-@app.route('/set_map/<string:arg>')
-def set_map(arg):
-    global cards
-    cards.map = arg
-    return redirect(f'''/new_card''')
 
 @app.route('/new_card', methods=['GET', 'POST'])
 def add_cards():
     global cards, points
     form = MainCardsForm()
     if form.validate_on_submit():
-
         db_sess = db_session.create_session()
-
         last = db_sess.query(Card).all()
-
         if last:
             cards.id = last[-1].id + 1
         else:
             cards.id = 1
-
         # need to check
         db_sess.close()
 
@@ -381,6 +366,7 @@ def add_cards():
         return redirect('/new_card/page/1')
     return render_template('main_card.html', title='Добавление Маршрута', count=points,
                            form=form, page=0)
+
 
 @app.route('/new_card/page/<int:number>', methods=['GET', 'POST'])
 def add_page(number):
@@ -405,26 +391,26 @@ def add_page(number):
         if number != points[-1]:
             return redirect(f'/new_card/page/{number + 1}')
         else:
-            db_sess.add(cards)
-            db_sess.commit()
-            db_sess.close()
-            return redirect('/')
+            try:
+                db_sess.add(cards)
+                base_com_close(db_sess)
+                return redirect('/')
+            except Exception:
+                abort(500)
 
     if number % 2:
-        return render_template('small_card.html', title=f'шаг {number}', page=number,
-                               head=f'Расскажи о точке остановки №{number}',
-                               count=points,
-                               form=form)
+        header = f'Расскажи о точке остановки №{number}'
     else:
         if number == points[-1]:
-            return render_template('small_card.html', title=f'шаг {number}', page=number,
-                                   head=f'Расскажи, как добираться в начало пути',
-                                   count=points, delta=True,
-                                   form=form)
-        return render_template('small_card.html', title=f'шаг {number}', page=number,
-                               head=f'Расскажи, как добирался от пункта №{number - 1} до следующей остановки',
-                               count=points,
-                               form=form)
+            header = f'Расскажи, как добираться в начало пути'
+        else:
+            header = f'Расскажи, как добирался от пункта №{number - 1} до следующей остановки'
+
+    return render_template('small_card.html', title=f'шаг {number}', page=number,
+                           head=header,
+                           count=points,
+                           form=form)
+
 
 @app.route('/start_corrector/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -441,17 +427,23 @@ def starter(id):
     else:
         abort(404)
 
-    return redirect(f'/old_card_pre_map#{cards.map}')
+    return redirect(f'/card_pre_map/1#{cards.map}')
 
-@app.route('/old_card_pre_map', methods=['GET', 'POST'])
-def start_to_chng_map():
+
+@app.route('/card_pre_map/<int:chng>', methods=['GET', 'POST'])
+def add_map(chng):
+    if not chng:
+        return render_template('pre_map.html', title='Добавление Карты', chng=False)
     return render_template('pre_map.html', title='Изменение Карты', chng=True)
 
-@app.route('/chng_map/<string:arg>')
-def chng_map(arg):
+
+@app.route('/set_map/<string:arg>/<int:chng>')
+def set_map(arg, chng):
     global cards
     cards.map = arg
-    return redirect(f'''/card/{cards.id}''')
+    if chng:
+        return redirect(f'''/card/{cards.id}''')
+    return redirect(f'''/new_card''')
 
 
 @app.route('/card/<int:id>', methods=['GET', 'POST'])
@@ -478,9 +470,6 @@ def change_cards(id):
                            form=form, delta=True, page=0)
 
 
-def size(el):
-    return el.stream.seek(0, os.SEEK_END)
-
 @app.route('/card/page/<int:number>', methods=['GET', 'POST'])
 def change_page(number):
     global cards, points
@@ -500,7 +489,6 @@ def change_page(number):
         if card:
             card.txt = form.text.data
             card.title = form.title.data
-
 
             file = form.picture.data
             if file:
@@ -532,7 +520,8 @@ def change_page(number):
                                    count=points, delta=True,
                                    form=form)
         return render_template('small_card.html', title=f'шаг {number}', page=number,
-                               head=f'Расскажи, как добирался от пункта №{number - 1} до следующей остановки',
+                               head=f'Расскажи, как добирался от пункта №{number - 1}'
+                                    f' до следующей остановки',
                                count=points, delta=True,
                                form=form)
 
@@ -550,6 +539,7 @@ def load_card(id):
         return redirect(f'/display_cards#{cards.map}')
 
     abort(404)
+
 
 @app.route("/display_cards")
 def display_card():
@@ -582,19 +572,18 @@ def display_page(number):
 @app.route('/card_delete/<int:id>', methods=['GET', 'POST'])
 def cards_delete(id):
     db_sess = db_session.create_session()
-    cards = db_sess.query(Card).filter(Card.id == id,
-                                       Card.creator == current_user.id
-                                       ).first()
-    if cards:
-        db_sess.delete(cards)
+    big_card = db_sess.query(Card).filter(Card.id == id,
+                                          Card.creator == current_user.id
+                                          ).first()
+    if big_card:
+        db_sess.delete(big_card)
 
-        cards = db_sess.query(Card_Page).filter(Card_Page.mother == id,
-                                                Card.creator == current_user.id
-                                                ).all()
-        for card in cards:
+        small_cards = db_sess.query(Card_Page).filter(Card_Page.mother == id,
+                                                      Card.creator == current_user.id).all()
+        for card in small_cards:
             db_sess.delete(card)
 
-        db_sess.commit()
+        base_com_close(db_sess)
     else:
         abort(404)
     return redirect('/cards')
@@ -614,8 +603,7 @@ def cards_like(arg):
             card.loyality_counter += 1
             card.creator_obj.loyality += 1
 
-            db_sess.commit()
-            db_sess.close()
+            base_com_close(db_sess)
     else:
         abort(404)
 

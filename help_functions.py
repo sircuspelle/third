@@ -1,3 +1,5 @@
+import os
+
 import requests
 
 
@@ -21,3 +23,10 @@ def region_coords(name):
         print("Ошибка выполнения запроса:")
         print(geocoder_request)
         print("Http статус:", response.status_code, "(", response.reason, ")")
+
+def base_com_close(session):
+    session.commit()
+    session.close()
+
+def size(el):
+    return el.stream.seek(0, os.SEEK_END)
