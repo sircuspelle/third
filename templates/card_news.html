@@ -1,37 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>News page</h1>
-<h1>Записи в блоге</h1>
 
-<a href="/card_{{ card.id }}/add_news" class="btn btn-secondary">Добавить новость</a>
+{% if current_user.is_authenticated %}
+<br>
+<a href="/card_{{ card_id }}/add_news" class="btn btn-secondary">Добавить новость</a>
+<br>
+<br>
+{% endif %}
+
+{% if not empty %}
+<h1>К этому маршруту пока нет новостей</h1>
+{% endif %}
+
 
 {% for item in news%}
-<div class="col-md6 border rounded">
-    <h2>{{item.title}}</h2>
-    <div>
+<div class="card border-dark mb-3">
+    <div class="card-header">
+        <h2>{{item.title}}</h2>
+    </div>
+    <div class="card-body text-dark">
         {% if item.preview %}
             {{ item.preview }}
         {% else %}
             {{item.content}}
         {% endif %}
-    </div>
-    <div>
         Автор - {{item.user.nickname}}, Дата написания - {{item.created_date}}
     </div>
-</div>
-<div>
-    <a href="/card_{{ card.id }}/reading_news/{{ item.id }}" class="btn btn-success">
-        Читать
-    </a>
-    {% if current_user.is_authenticated and current_user == item.user %}
-        <a href="/card_{{ card.id }}/edit_news/{{ item.id }}" class="btn btn-warning">
-            Изменить
+    <div>
+        <a href="/reading_news/{{ item.id }}" class="btn btn-success">
+            Читать
         </a>
-        <a href="/card_{{ card.id }}/news_delete/{{ item.id }}" class="btn btn-danger">
-            Удалить
-        </a>
-    {% endif %}
+        {% if current_user.is_authenticated and current_user == item.user %}
+            <a href="/card_{{ card_id }}/edit_news/{{ item.id }}" class="btn btn-warning">
+                Изменить
+            </a>
+            <a href="/card_{{ card_id }}/news_delete/{{ item.id }}" class="btn btn-danger">
+                Удалить
+            </a>
+        {% endif %}
+    </div>
 </div>
+<br>
 {% endfor %}
 {% endblock %}

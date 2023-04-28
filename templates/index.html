@@ -7,21 +7,29 @@
     <tr>
         {% if loop.index % 2 == 0 %}
         <td align="left">
-            <div class="card text-bg-success mb-3" style="width: 25rem;">
-                <a href="/display_card/{{item.id}}"><h2 align="center" class="card-title">{{item.title}}({{item.loyality_counter}})</h2></a>
-                <h3 align="center" class="card-text" >{{item.region}}, {{item.place}}</h3>
-                <h3 align="center">Продолжительность около {{item.longest}} часов(-а)</h3>
-                <h3 align="center" class="card-text" >{{item.creator_obj.name}}-{{item.changed_at}}</h3>
+
+            <div class="card border-dark mb-3" style="width: 45rem; ">
+                <div class="card-header">
+                    <a href="/display_card/{{item.id}}"><h2 class="card-title" align="left">{{item.title}}({{item.loyality_counter}}likes)</h2></a>
+                </div>
+                <div class="card-body text-dark">
+                    <h3 align="center">{{item.region}}, {{item.place}}</h3>
+                    <h3 align="center">Продолжительность около {{item.longest}} часов(-а)</h3>
+                    <h3 align="center">Автор: {{item.creator_obj.nickname}}-{{item.changed_at}}</h3>
+                </div>
             </div>
+
         </td>
          {% else %}
         <td align="right">
-            <div class="card text-bg-success mb-3" style="width: 25rem;">
-                <div class="card-body">
-                <a href="/display_card/{{item.id}}"><h2 class="card-title" align="center" >{{item.title}}({{item.loyality_counter}})</h2></a>
-                <h3 align="center" class="card-text" >{{item.region}}, {{item.place}}</h3>
-                <h3 align="center">Продолжительность около {{item.longest}} часов(-а)</h3>
-                <h3 align="center" class="card-text" >{{item.creator}}-{{item.changed_at}}</h3>
+             <div class="card border-dark mb-3" style="width: 45rem; ">
+                <div class="card-header">
+                    <a href="/display_card/{{item.id}}"><h2 class="card-title" align="left">{{item.title}}({{item.loyality_counter}}likes)</h2></a>
+                </div>
+                <div class="card-body text-dark">
+                    <h3 align="center">{{item.region}}, {{item.place}}</h3>
+                    <h3 align="center">Продолжительность около {{item.longest}} часов(-а)</h3>
+                    <h3 align="center">Автор: {{item.creator_obj.nickname}}-{{item.changed_at}}</h3>
                 </div>
             </div>
         </td>

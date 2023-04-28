@@ -1,0 +1,2 @@
+мне не нравится этот маршрут;nickname;1
+@nickname, почему?;nickname;1

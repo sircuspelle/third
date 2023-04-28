@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<br>
 <div class="card">
 <h1 class="card-title" >{{cards.title}}</h1>
 <h4>{{cards.creator_obj.nickname}} - {{cards.changed_at}} {{cards.region}}, {{cards.place}}</h4>
@@ -37,13 +38,14 @@
 <main role="main" class="container">
     {% block content_2 %}{% endblock %}
 </main>
-
+    <div>
 {% if current_user.is_authenticated %}
-    <h2><a href=/like/{{cards.id}}-{{page}} class="btn btn-success">Мне нравится</a></h2>
+    <a href=/like/{{cards.id}}-{{page}} class="btn btn-success">Мне нравится</a>
 {% endif %}
 
-<h2><a href="/card_{{cards.id}}/news" class="btn btn-info">Новости</a></h2>
+<a href="/card_{{cards.id}}/news" class="btn btn-info">Новости</a>
 
-<h2><a href="/card_{{cards.id}}/forum" class="btn btn-info">Форум</a></h2>
+<a href="/card_{{cards.id}}/forum" class="btn btn-info">Форум</a>
+        </div>
 </div>
 {% endblock %}

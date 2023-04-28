@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Index page</h1>
+<h1>Маршруты</h1>
+<br>
 {% for item in cards%}
-    <div class="card text-bg-success mb-3" style="width: 80rem; background_color: #CBD1CE;">
-    <a href="/display_card/{{item.id}}"><h2 class="card-title" align="left">{{item.title}}({{item.loyality_counter}})</h2></a>
-    <h3 align="left">{{item.region}}, {{item.place}}</h3>
-        <h3 align="left">Продолжительность около {{item.longest}} часов(-а)</h3>
-    <h3 align="left">{{item.creator_obj.nickname}}-{{item.changed_at}}</h3>
-    {% if current_user.is_authenticated and current_user.id == item.creator %}
+    <div class="card border-dark mb-3" style="width: 80rem; ">
+        <div class="card-header">
+            <a href="/display_card/{{item.id}}"><h2 class="card-title" align="left">{{item.title}}({{item.loyality_counter}})</h2></a>
+        </div>
+        <div class="card-body text-dark">
+            <h3 align="left">{{item.region}}, {{item.place}}</h3>
+            <h3 align="left">Продолжительность около {{item.longest}} часов(-а)</h3>
+            <h3 align="left"> Автор: {{item.creator_obj.nickname}}-{{item.changed_at}}</h3>
+        </div>
+
+        {% if current_user.is_authenticated and current_user.id == item.creator %}
         <div>
            <a href="/start_corrector/{{ item.id }}" class="btn btn-warning">
             Изменить
@@ -17,7 +23,7 @@
             Удалить
             </a>
         </div>
-    {% endif %}
+        {% endif %}
     </div>
 {% endfor %}
 {% endblock %}
