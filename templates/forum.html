@@ -5,17 +5,31 @@
 <form action="" method="post">
     {{ form.hidden_tag() }}
 {% for message in content %}
-<div class="col-md6 border rounded">
-    <div>
-        {{message[1]}}
-    </div>
-    <div>
-        {{message[0]}}
-    </div>
-</div>
-<a href="/card_{{ card_id }}/forum/{{ message[1] }}" class="btn btn-success">
-    Ответить
-</a>
+    {% if message[3] == check %}
+        <div class="col-md6 border rounded" style="margin-left: 100px;">
+            <div>
+                {{message[1]}}
+            </div>
+            <div>
+                {{message[0]}}
+            </div>
+        </div>
+        <a href="/card_{{ card_id }}/forum/{{ message[1] }}/line_{{ message[4] }}" class="btn btn-success" style="margin-left: 100px;">
+            Ответить
+        </a>
+    {% else %}
+        <div class="col-md6 border rounded">
+            <div>
+                {{message[1]}}
+            </div>
+            <div>
+                {{message[0]}}
+            </div>
+        </div>
+        <a href="/card_{{ card_id }}/forum/{{ message[1] }}/line_{{ message[4] }}" class="btn btn-success">
+            Ответить
+        </a>
+    {% endif %}
 {% endfor %}
 <p>
     {{ form.content.label }}<br>

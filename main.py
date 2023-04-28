@@ -48,7 +48,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-username = ''
+username = None
+shift = 0
+line = 0
+line_count = 1
 
 
 @login_manager.user_loader
@@ -77,11 +80,14 @@ def index():
 
 
 @app.route('/news',  methods=['GET', 'POST'])
-@login_required
 def all_news():
     db_sess = db_session.create_session()
-    news = db_sess.query(News).filter((News.user == current_user) | (News.is_private != True))
+    try:
+        news = db_sess.query(News).filter((News.user == current_user) | (News.is_private != True))
+    except:
+        news = db_sess.query(News).filter((News.is_private != True))
     return render_template("all_news.html", news=news)
+
 
 @app.route('/add_news',  methods=['GET', 'POST'])
 @login_required
@@ -160,7 +166,6 @@ def news_delete(news_id):
 
 
 @app.route('/reading_news/<int:news_id>', methods=['GET', 'POST'])
-@login_required
 def reading_news(news_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == news_id,
@@ -170,7 +175,6 @@ def reading_news(news_id):
 
 
 @app.route('/card_<int:card_id>/news',  methods=['GET', 'POST'])
-@login_required
 def card_news(card_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != True))
@@ -268,28 +272,46 @@ def reading_card_news(card_id, news_id):
 @app.route('/card_<int:card_id>/forum', methods=['GET', 'POST'])
 @login_required
 def forum(card_id):
-    global username
+    global username, shift, line, line_count
     form = ForumForm()
     if form.submit.data:
-        with open(f'files/forum{card_id}.txt', "a", encoding="utf8") as file:
-            file.write(f"{form.content.data};{current_user.nickname};{current_user.id}\n")
+        if line:
+            with open(f'files/forum{card_id}.txt', "r", encoding="utf8") as file:
+                all_lines = file.readlines()
+                all_lines = [i[:-1] for i in all_lines]
+                text = f"{form.content.data};{current_user.nickname};{current_user.id};{shift};{line_count}"
+            with open(f'files/forum{card_id}.txt', "w", encoding="utf8") as file:
+                if len(all_lines) > line:
+                    file.write('\n'.join(all_lines[:line] + [text] + all_lines[line:]))
+                else:
+                    file.write('\n'.join(all_lines + [text]))
+            line = 0
+        else:
+            with open(f'files/forum{card_id}.txt', "a", encoding="utf8") as file:
+                file.write(f"{form.content.data};{current_user.nickname};{current_user.id};{shift};{line_count}\n")
+                form.content.data = f''
+        line_count += 1
     if username:
+        shift = 1
         form.content.data = f'@{username}, '
+        username = ''
+    else:
+        shift = 0
     try:
         with open(f'files/forum{card_id}.txt', "r", encoding="utf8") as file:
             content = file.readlines()
-            content = [i.rsplit(';', 2) for i in content]
+            content = [i[:-1].rsplit(';', 4) for i in content]
     except:
         with open(f'files/forum{card_id}.txt', "w", encoding="utf8") as file:
             content = []
-    return render_template('forum.html', title='Форум', form=form, content=content, card_id=card_id)
+    return render_template('forum.html', title='Форум', form=form, content=content, card_id=card_id, check="1")
 
 
-@app.route('/card_<int:card_id>/forum/<nickname>', methods=['GET', 'POST'])
-@login_required
-def select_name(card_id, nickname):
-    global username
+@app.route('/card_<int:card_id>/forum/<nickname>/line_<int:line_number>', methods=['GET', 'POST'])
+def select_name(card_id, nickname, line_number):
+    global username, line
     username = nickname
+    line = line_number
     return redirect(f'/card_{card_id}/forum')
 
 
@@ -368,15 +390,18 @@ def start_to_add_cards():
     return render_template('pre_card.html', title='Добавление Маршрута',
                            form=pre_form)
 
+
 @app.route('/new_card_pre_map', methods=['GET', 'POST'])
 def add_map():
     return render_template('pre_map.html', title='Добавление Карты', chng=False)
+
 
 @app.route('/set_map/<string:arg>')
 def set_map(arg):
     global cards
     cards.map = arg
     return redirect(f'''/new_card''')
+
 
 @app.route('/new_card', methods=['GET', 'POST'])
 def add_cards():
@@ -405,6 +430,7 @@ def add_cards():
     return render_template('main_card.html', title='Добавление Маршрута', count=points,
                            form=form, page=0)
 
+
 @app.route('/start_corrector/<int:id>', methods=['GET', 'POST'])
 def starter(id):
     global cards, points
@@ -422,10 +448,12 @@ def starter(id):
 
     return redirect(f'/old_card_pre_map#{cards.map}')
 
+
 @app.route('/old_card_pre_map', methods=['GET', 'POST'])
 @login_required
 def start_to_chng_map():
     return render_template('pre_map.html', title='Изменение Карты', chng=True)
+
 
 @app.route('/chng_map/<string:arg>')
 def chng_map(arg):
@@ -578,7 +606,6 @@ def load_card(id):
         return redirect(f'/display_cards#{cards.map}')
 
     abort(404)
-
 
 
 @app.route("/display_cards")
