@@ -29,7 +29,7 @@
             Читать
         </a>
         {% if current_user.is_authenticated and current_user == item.user %}
-            <a href="/edit_news/{{ item.id }}" class="btn btn-warning">
+            <a href="/edit_news/{{ item.id }}/not_in" class="btn btn-warning">
                 Изменить
             </a>
             <a href="/news_delete/{{ item.id }}" class="btn btn-danger">

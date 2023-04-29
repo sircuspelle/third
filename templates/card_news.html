@@ -20,19 +20,23 @@
         <h2>{{item.title}}</h2>
     </div>
     <div class="card-body text-dark">
+        <div>
         {% if item.preview %}
-            {{ item.preview }}
+        {{ item.preview }}
         {% else %}
             {{item.content}}
         {% endif %}
+            </div>
+        <div>
         Автор - {{item.user.nickname}}, Дата написания - {{item.created_date}}
+            </div>
     </div>
     <div>
         <a href="/reading_news/{{ item.id }}" class="btn btn-success">
             Читать
         </a>
         {% if current_user.is_authenticated and current_user == item.user %}
-            <a href="/edit_news/{{ item.id }}" class="btn btn-warning">
+            <a href="/edit_news/{{ item.id }}/in" class="btn btn-warning">
                 Изменить
             </a>
             <a href="card_{{ card_id }}/news_delete/{{ item.id }}" class="btn btn-danger">

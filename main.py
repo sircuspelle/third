@@ -94,8 +94,8 @@ def add_news(card_id=None):
                            form=form)
 
 
-@app.route('/edit_news/<int:news_id>', methods=['GET', 'POST'])
-def edit_news(news_id):
+@app.route('/edit_news/<int:news_id>/<string:where>', methods=['GET', 'POST'])
+def edit_news(news_id, where):
     form = NewsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
@@ -123,7 +123,7 @@ def edit_news(news_id):
                 news.content = form.content.data
             news.is_private = form.is_private.data
             db_sess.commit()
-            if news.card_id:
+            if where == 'in':
                 return redirect(f'/card_{news.card_id}/news')
             return redirect(f'/news')
         else:
@@ -162,8 +162,14 @@ def reading_news(news_id):
 @app.route('/card_<int:card_id>/news', methods=['GET', 'POST'])
 def card_news(card_id):
     db_sess = db_session.create_session()
-    news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != True))
-    return render_template("card_news.html", news=news, card_id=card_id, title="Новости")
+
+    if current_user.is_authenticated:
+        news = db_sess.query(News).filter((News.card_id == card_id),
+                                          ((News.is_private != 1) | (News.user_id == current_user.id))).all()
+    else:
+        news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != 1)).all()
+
+    return render_template("card_news.html", news=news, card_id=card_id, title="Новости", empty=bool(news))
 
 
 @app.route('/card_<int:card_id>/news_delete/<int:news_id>', methods=['GET', 'POST'])
@@ -179,7 +185,6 @@ def add_news_card(card_id):
 
 
 @app.route('/card_<int:card_id>/forum', methods=['GET', 'POST'])
-@login_required
 def forum(card_id):
     global username, shift, line, line_count
     form = ForumForm()

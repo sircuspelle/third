@@ -6,7 +6,7 @@
     {{ form.hidden_tag() }}
 {% for message in content %}
     {% if message[3] == check %}
-        <div class="col-md6 border rounded" style="margin-left: 100px;">
+        <div class="card" style="margin-left: 100px; width: 180 px;">
             <div>
                 {{message[1]}}
             </div>
@@ -14,11 +14,13 @@
                 {{message[0]}}
             </div>
         </div>
-        <a href="/card_{{ card_id }}/forum/{{ message[1] }}/line_{{ message[4] }}" class="btn btn-success" style="margin-left: 100px;">
-            Ответить
-        </a>
+        {% if current_user.is_authenticated %}
+            <a href="/card_{{ card_id }}/forum/{{ message[1] }}/line_{{ message[4] }}" class="btn btn-success" style="margin-left: 100px;">
+                Ответить
+            </a>
+        {% endif %}
     {% else %}
-        <div class="col-md6 border rounded">
+        <div class="card">
             <div>
                 {{message[1]}}
             </div>
@@ -26,11 +28,16 @@
                 {{message[0]}}
             </div>
         </div>
-        <a href="/card_{{ card_id }}/forum/{{ message[1] }}/line_{{ message[4] }}" class="btn btn-success">
-            Ответить
-        </a>
+        {% if current_user.is_authenticated %}
+            <a href="/card_{{ card_id }}/forum/{{ message[1] }}/line_{{ message[4] }}" class="btn btn-success">
+                Ответить
+            </a>
+        {% endif %}
     {% endif %}
+    <br>
+    <br>
 {% endfor %}
+{% if current_user.is_authenticated %}
 <p>
     {{ form.content.label }}<br>
     {{ form.content(class="form-control") }}<br>
@@ -42,5 +49,6 @@
 </p>
 <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
 {{message}}
+{% endif %}
 </form>
 {% endblock %}

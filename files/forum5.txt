@@ -2,3 +2,8 @@
 @nickname, ты не прав;nickname;1;1;2
 я прав;nickname;1;0;3
 @nickname, идиот, ты не мне отвечаешь;nickname;1;1;4
+@nickname, теперь тебе?;nickname;1;1;1
+@nickname, ну да;nickname;1;1;2
+мне нравится;nickname;1;0;3
+ещё бы ;nickname;1;1;4
+@nickname, не груби;nickname;1;1;1
