@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d13100c-2e49-41ac-9397-62f454c32364" name="Changes" comment="prepare for glitch">
+    <list default="true" id="1d13100c-2e49-41ac-9397-62f454c32364" name="Changes" comment="another">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/описание.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/пояснительная записка.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/презентация.odp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/презентация.ppt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +21,13 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="for_glitch" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -40,7 +50,7 @@
       <recent name="C:\Users\alsol\third_1\static\img" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.stadiums — копия">
+  <component name="RunManager" selected="Python.server (1)">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="third_1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -75,6 +85,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/help_functions.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="server (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="third_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/server.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -203,8 +234,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.stadiums — копия" />
+        <item itemvalue="Python.server (1)" />
         <item itemvalue="Shell Script.start.sh" />
+        <item itemvalue="Python.stadiums — копия" />
         <item itemvalue="Python.server" />
         <item itemvalue="Python.help_functions" />
       </list>
@@ -303,7 +335,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682777677478</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="prepare for glitch_1">
+      <created>1682779115272</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1682779115272</updated>
+    </task>
+    <task id="LOCAL-00014" summary="another">
+      <created>1682780370602</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1682780370602</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -344,6 +390,8 @@
     <MESSAGE value="всё уже хорошо" />
     <MESSAGE value="requiremenst added" />
     <MESSAGE value="prepare for glitch" />
-    <option name="LAST_COMMIT_MESSAGE" value="prepare for glitch" />
+    <MESSAGE value="prepare for glitch_1" />
+    <MESSAGE value="another" />
+    <option name="LAST_COMMIT_MESSAGE" value="another" />
   </component>
 </project>
