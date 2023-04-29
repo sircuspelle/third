@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d13100c-2e49-41ac-9397-62f454c32364" name="Changes" comment="requiremenst added">
+    <list default="true" id="1d13100c-2e49-41ac-9397-62f454c32364" name="Changes" comment="prepare for glitch">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,20 +27,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/alsol/third_1/static/img&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/alsol/PycharmProject",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\alsol\third_1\static\img" />
     </key>
   </component>
-  <component name="RunManager" selected="Shell Script.start.sh">
+  <component name="RunManager" selected="Python.stadiums — копия">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="third_1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -96,6 +96,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="C:\Users\alsol\third_1\server.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="stadiums — копия" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="third_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../PycharmProject/WEB3/WEB. Знакомство с API" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../PycharmProject/WEB3/WEB. Знакомство с API/stadiums — копия.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -182,6 +203,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.stadiums — копия" />
         <item itemvalue="Shell Script.start.sh" />
         <item itemvalue="Python.server" />
         <item itemvalue="Python.help_functions" />
@@ -274,7 +296,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682768764396</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="prepare for glitch">
+      <created>1682777677478</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1682777677478</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -314,6 +343,7 @@
     <MESSAGE value="ещё поменял" />
     <MESSAGE value="всё уже хорошо" />
     <MESSAGE value="requiremenst added" />
-    <option name="LAST_COMMIT_MESSAGE" value="requiremenst added" />
+    <MESSAGE value="prepare for glitch" />
+    <option name="LAST_COMMIT_MESSAGE" value="prepare for glitch" />
   </component>
 </project>
