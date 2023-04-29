@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<h1>{{title}}</h1>
 {% if current_user.is_authenticated %}
 <br>
 <a href="/card_{{ card_id }}/add_news" class="btn btn-secondary">Добавить новость</a>
@@ -32,10 +32,10 @@
             Читать
         </a>
         {% if current_user.is_authenticated and current_user == item.user %}
-            <a href="/card_{{ card_id }}/edit_news/{{ item.id }}" class="btn btn-warning">
+            <a href="/edit_news/{{ item.id }}" class="btn btn-warning">
                 Изменить
             </a>
-            <a href="/card_{{ card_id }}/news_delete/{{ item.id }}" class="btn btn-danger">
+            <a href="card_{{ card_id }}/news_delete/{{ item.id }}" class="btn btn-danger">
                 Удалить
             </a>
         {% endif %}

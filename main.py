@@ -81,20 +81,21 @@ def add_news(card_id=None):
             news.content = form.content.data
         else:
             news.content = form.content.data
+        news.is_private = form.is_private.data
         if card_id:
             news.card_id = card_id
-        news.is_private = form.is_private.data
         current_user.news.append(news)
         db_sess.merge(current_user)
         db_sess.commit()
         if card_id:
             return redirect(f'/card_{card_id}/news')
-        return redirect(f'/news')
+        return redirect('/news')
     return render_template('news.html', title='Добавление новости',
                            form=form)
 
 
-def edit_news(news_id, card_id=None):
+@app.route('/edit_news/<int:news_id>', methods=['GET', 'POST'])
+def edit_news(news_id):
     form = NewsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
@@ -122,8 +123,8 @@ def edit_news(news_id, card_id=None):
                 news.content = form.content.data
             news.is_private = form.is_private.data
             db_sess.commit()
-            if card_id:
-                return redirect(f'/card_{card_id}/news')
+            if news.card_id:
+                return redirect(f'/card_{news.card_id}/news')
             return redirect(f'/news')
         else:
             abort(404)
@@ -133,6 +134,8 @@ def edit_news(news_id, card_id=None):
                            )
 
 
+@app.route('/news_delete/<int:news_id>', methods=['GET', 'POST'])
+@login_required
 def news_delete(news_id, card_id=None):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == news_id,
@@ -144,73 +147,35 @@ def news_delete(news_id, card_id=None):
     else:
         abort(404)
     if card_id:
-        return redirect(f'/card_{card_id}/news')
-
+        return redirect(f'/card_{news.card_id}/news')
     return redirect('/news')
 
 
+@app.route('/reading_news/<int:news_id>', methods=['GET', 'POST'])
 def reading_news(news_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter(News.id == news_id
                                       ).first()
     return render_template('reading_news.html', news=news)
 
-@app.route('/add_news',  methods=['GET', 'POST'])
-@login_required
-def ad_new():
-    return add_news()
 
-
-@app.route('/edit_news/<int:news_id>', methods=['GET', 'POST'])
-@login_required
-def edit_new(news_id):
-    return edit_news(news_id)
-
-
-@app.route('/news_delete/<int:news_id>', methods=['GET', 'POST'])
-@login_required
-def new_delete(news_id):
-    return news_delete(news_id)
-
-
-@app.route('/reading_news/<int:news_id>', methods=['GET', 'POST'])
-def reading_new(news_id):
-    return reading_news(news_id)
-
-
-@app.route('/card_<int:card_id>/news',  methods=['GET', 'POST'])
+@app.route('/card_<int:card_id>/news', methods=['GET', 'POST'])
 def card_news(card_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != True))
-    card = db_sess.query(Card).filter(Card.id == card_id).first()
+    return render_template("card_news.html", news=news, card_id=card_id, title="Новости")
 
-    return render_template("card_news.html", news=news, card=card)
+
+@app.route('/card_<int:card_id>/news_delete/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+def delete_news(card_id, news_id):
+    return news_delete(news_id, card_id)
 
 
 @app.route('/card_<int:card_id>/add_news',  methods=['GET', 'POST'])
 @login_required
 def add_news_card(card_id):
     return add_news(card_id)
-# good
-
-
-@app.route('/card_<int:card_id>/edit_news/<int:news_id>', methods=['GET', 'POST'])
-@login_required
-def edit_card_news(card_id, news_id):
-    return edit_news(news_id, card_id)
-# good
-
-
-@app.route('/card_<int:card_id>/news_delete/<int:news_id>', methods=['GET', 'POST'])
-@login_required
-def card_news_delete(card_id, news_id):
-    return news_delete(news_id, card_id)
-
-
-@app.route('/card_<int:card_id>/reading_news/<int:news_id>', methods=['GET', 'POST'])
-@login_required
-def reading_card_news(card_id, news_id):
-    return reading_news(news_id)
 
 
 @app.route('/card_<int:card_id>/forum', methods=['GET', 'POST'])
