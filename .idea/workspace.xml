@@ -1,8 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d13100c-2e49-41ac-9397-62f454c32364" name="Changes" comment="prepare for glitch">
+    <list default="true" id="1d13100c-2e49-41ac-9397-62f454c32364" name="Changes" comment="prepare for glitch_1">
+      <change afterPath="$PROJECT_DIR$/airplane/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/airplane/pyvenv.cfg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/airplane/start.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/blogs.db" beforeDir="false" afterPath="$PROJECT_DIR$/db/blogs.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/10_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/11_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/11_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/12_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/12_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/12_4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/13_3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/14_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/14_4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/14_5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/15_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/15_2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/16_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/17_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/1_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/1_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/1_2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/1_3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/3_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/3_2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/4_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/4_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/5_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/5_2.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/7_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/7_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/7_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/8_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/8_2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/9_1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/WIN_20220827_11_14_39_Pro.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/описание.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/пояснительная записка.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/презентация.odp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/презентация.ppt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +56,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="base" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -40,7 +84,7 @@
       <recent name="C:\Users\alsol\third_1\static\img" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.stadiums — копия">
+  <component name="RunManager" selected="Shell Script.start.sh">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="third_1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -75,6 +119,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/help_functions.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="server (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="third_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/server.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -203,8 +268,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.stadiums — копия" />
         <item itemvalue="Shell Script.start.sh" />
+        <item itemvalue="Python.server (1)" />
+        <item itemvalue="Python.stadiums — копия" />
         <item itemvalue="Python.server" />
         <item itemvalue="Python.help_functions" />
       </list>
@@ -303,7 +369,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682777677478</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="prepare for glitch_1">
+      <created>1682779115272</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1682779115272</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -320,7 +393,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="base" />
+                        <option value="for_glitch" />
                       </list>
                     </value>
                   </entry>
@@ -344,6 +417,7 @@
     <MESSAGE value="всё уже хорошо" />
     <MESSAGE value="requiremenst added" />
     <MESSAGE value="prepare for glitch" />
-    <option name="LAST_COMMIT_MESSAGE" value="prepare for glitch" />
+    <MESSAGE value="prepare for glitch_1" />
+    <option name="LAST_COMMIT_MESSAGE" value="prepare for glitch_1" />
   </component>
 </project>
