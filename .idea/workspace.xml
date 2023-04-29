@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d13100c-2e49-41ac-9397-62f454c32364" name="Changes" comment="ещё поменял">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/third_1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/third_1.iml" afterDir="false" />
+    <list default="true" id="1d13100c-2e49-41ac-9397-62f454c32364" name="Changes" comment="всё уже хорошо">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/blogs.db" beforeDir="false" afterPath="$PROJECT_DIR$/db/blogs.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/files/forum5.txt" beforeDir="false" afterPath="$PROJECT_DIR$/files/forum5.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/all_news.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/all_news.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/card_news.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/card_news.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/forum.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/forum.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/reading_news.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reading_news.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,8 +244,18 @@
       <option name="project" value="LOCAL" />
       <updated>1682760920421</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="всё уже хорошо">
+      <created>1682765119142</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1682765119142</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -288,6 +289,7 @@
     <MESSAGE value="почистил" />
     <MESSAGE value="вроде всё есть" />
     <MESSAGE value="ещё поменял" />
-    <option name="LAST_COMMIT_MESSAGE" value="ещё поменял" />
+    <MESSAGE value="всё уже хорошо" />
+    <option name="LAST_COMMIT_MESSAGE" value="всё уже хорошо" />
   </component>
 </project>
