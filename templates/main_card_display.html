@@ -3,49 +3,53 @@
 {% block content %}
 <br>
 <div class="card">
-<h1 class="card-title" >{{cards.title}}</h1>
-<h4>{{cards.creator_obj.nickname}} - {{cards.changed_at}} {{cards.region}}, {{cards.place}}</h4>
-<h4>Продолжительность около {{cards.longest}} часов(-а)</h4>
-<form action="" method="post">
-<header>
-    <nav class="navbar navbar-light bg-primary">
-        {% if page == 0 %}
-                <h2><a href=/display_card/{{cards.id}} class="btn btn-danger">0</a></h2>
-            {% else %}
-                <h2><a href=/display_card/{{cards.id}} class="btn btn-secondary">0</a></h2>
-            {% endif %}
-        {% for number in count %}
-            {% if page == number %}
-                <h2><a href=/display_card/page/{{number}} class="btn btn-danger">{{number}}</a></h2>
-            {% else %}
-                <h2><a href=/display_card/page/{{number}} class="btn btn-secondary">{{number}}</a></h2>
-            {% endif %}
-        {% endfor %}
-    </nav>
-    </header>
-</form>
+    <div class="card-header">
+        <h1 class="card-title" >{{cards.title}}</h1>
+        <h4>{{cards.creator_obj.nickname}} - {{cards.changed_at}} {{cards.region}}, {{cards.place}}</h4>
+        <h4>Продолжительность около {{cards.longest}} часов(-а)</h4>
+    </div>
+    <div class="card-body">
+    <form action="" method="post">
+    <header>
+        <nav class="navbar navbar-light bg-primary">
+            {% if page == 0 %}
+                    <h2><a href=/display_card/{{cards.id}} class="btn btn-danger">0</a></h2>
+                {% else %}
+                    <h2><a href=/display_card/{{cards.id}} class="btn btn-secondary">0</a></h2>
+                {% endif %}
+            {% for number in count %}
+                {% if page == number %}
+                    <h2><a href=/display_card/page/{{number}} class="btn btn-danger">{{number}}</a></h2>
+                {% else %}
+                    <h2><a href=/display_card/page/{{number}} class="btn btn-secondary">{{number}}</a></h2>
+                {% endif %}
+            {% endfor %}
+        </nav>
+        </header>
+    </form>
 
-{% if page == 0 %}
-    <br>
+    {% if page == 0 %}
+        <br>
 
-    <body>
-            <div class="conatainer" align="center" id="map" style="width: 600px; height: 400px"></div>
-    </body>
+        <body>
+                <div class="conatainer" align="center" id="map" style="width: 600px; height: 400px"></div>
+        </body>
 
-    <br>
-{% endif %}
+        <br>
+    {% endif %}
 
-<main role="main" class="container">
-    {% block content_2 %}{% endblock %}
-</main>
-    <div>
-{% if current_user.is_authenticated %}
-    <a href=/like/{{cards.id}}-{{page}} class="btn btn-success">Мне нравится</a>
-{% endif %}
+    <main role="main" class="container">
+        {% block content_2 %}{% endblock %}
+    </main>
+        <div>
+    {% if current_user.is_authenticated %}
+        <a href=/like/{{cards.id}}-{{page}} class="btn btn-success">Мне нравится</a>
+    {% endif %}
 
-<a href="/card_{{cards.id}}/news" class="btn btn-info">Новости</a>
+    <a href="/card_{{cards.id}}/news" class="btn btn-info">Новости</a>
 
-<a href="/card_{{cards.id}}/forum" class="btn btn-info">Форум</a>
-        </div>
+    <a href="/card_{{cards.id}}/forum" class="btn btn-info">Форум</a>
+            </div>
+    </div>
 </div>
 {% endblock %}

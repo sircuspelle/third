@@ -1,8 +1,5 @@
-import os
-
 from flask import Flask, redirect, render_template, request, abort
 from flask_login import login_required, LoginManager, login_user, logout_user, current_user
-from werkzeug.utils import secure_filename
 
 from data import db_session
 
@@ -158,10 +155,6 @@ def reading_news(news_id):
                                       ).first()
     return render_template('reading_news.html', news=news)
 
-
-
-
-
 @app.route('/add_news',  methods=['GET', 'POST'])
 @login_required
 def ad_new():
@@ -186,11 +179,11 @@ def reading_new(news_id):
 
 
 @app.route('/card_<int:card_id>/news',  methods=['GET', 'POST'])
-@app.route('/card_<int:card_id>/news', methods=['GET', 'POST'])
 def card_news(card_id):
     db_sess = db_session.create_session()
     news = db_sess.query(News).filter((News.card_id == card_id), (News.is_private != True))
     card = db_sess.query(Card).filter(Card.id == card_id).first()
+
     return render_template("card_news.html", news=news, card=card)
 
 
@@ -387,8 +380,8 @@ def add_page(number):
                 db_sess.add(cards)
                 base_com_close(db_sess)
                 return redirect('/')
-            except Exception:
-                abort(500)
+            except Exception as ex:
+                return f"{ex}"
 
     if number % 2:
         header = f'Расскажи о точке остановки №{number}'
@@ -399,9 +392,7 @@ def add_page(number):
             header = f'Расскажи, как добирался от пункта №{number - 1} до следующей остановки'
 
     return render_template('small_card.html', title=f'шаг {number}', page=number,
-                           head=header,
-                           count=points,
-                           form=form)
+                           head=header, count=points, form=form)
 
 
 @app.route('/start_corrector/<int:id>', methods=['GET', 'POST'])
@@ -409,6 +400,7 @@ def add_page(number):
 def starter(id):
     global cards, points
 
+    db_session.global_init("db/blogs.db")
     db_sess = db_session.create_session()
     cards = db_sess.query(Card).filter(Card.id == id,
                                        Card.creator == current_user.id
@@ -422,24 +414,7 @@ def starter(id):
     return redirect(f'/card_pre_map/1#{cards.map}')
 
 
-@app.route('/card_pre_map/<int:chng>', methods=['GET', 'POST'])
-def add_map(chng):
-    if not chng:
-        return render_template('pre_map.html', title='Добавление Карты', chng=False)
-    return render_template('pre_map.html', title='Изменение Карты', chng=True)
-
-
-@app.route('/set_map/<string:arg>/<int:chng>')
-def set_map(arg, chng):
-    global cards
-    cards.map = arg
-    if chng:
-        return redirect(f'''/card/{cards.id}''')
-    return redirect(f'''/new_card''')
-
-
 @app.route('/card/<int:id>', methods=['GET', 'POST'])
-@login_required
 def change_cards(id):
     global cards, points
 
@@ -494,35 +469,49 @@ def change_page(number):
             if number != points[-1]:
                 return redirect(f'/card/page/{number + 1}')
             else:
-                db_sess.add(cards)
-                db_sess.commit()
 
-                #
-                db_sess.close()
+                try:
+                    db_sess.add(cards)
+                    base_com_close(db_sess)
+                    return redirect('/')
+                except Exception as ex:
+                    db_sess.close()
+                    return f"{ex}"
 
                 return redirect('/')
 
     if number % 2:
-        return render_template('small_card.html', title=f'шаг {number}', page=number,
-                               head=f'Расскажи о точке остановки №{number}',
-                               count=points,
-                               form=form, delta=True)
+        header = f'Расскажи о точке остановки №{number}'
     else:
         if number == points[-1]:
-            return render_template('small_card.html', title=f'шаг {number}', page=number,
-                                   head=f'Расскажи, как добираться в начало пути',
-                                   count=points, delta=True,
-                                   form=form)
-        return render_template('small_card.html', title=f'шаг {number}', page=number,
-                               head=f'Расскажи, как добирался от пункта №{number - 1}'
-                                    f' до следующей остановки',
-                               count=points, delta=True,
-                               form=form)
+            header = f'Расскажи, как добираться в начало пути'
+        else:
+            header = f'Расскажи, как добирался от пункта №{number - 1} до следующей остановки'
+
+    return render_template('small_card.html', title=f'шаг {number}', page=number,
+                           head=header, count=points, form=form)
+
+@app.route('/card_pre_map/<int:chng>', methods=['GET', 'POST'])
+def add_map(chng):
+    if not chng:
+        return render_template('pre_map.html', title='Добавление Карты', chng=False)
+    return render_template('pre_map.html', title='Изменение Карты', chng=True)
+
+
+@app.route('/set_map/<string:arg>/<int:chng>')
+def set_map(arg, chng):
+    global cards
+    cards.map = arg
+    if chng:
+        return redirect(f'''/card/{cards.id}''')
+    return redirect(f'''/new_card''')
 
 
 @app.route("/display_card/<int:id>")
 def load_card(id):
     global points, cards
+
+    # Здесь мы грузим карточку чтобы получить хэш, необходимы для работы карты
 
     db_sess = db_session.create_session()
     cards = db_sess.query(Card).filter(Card.id == id).first()
@@ -539,6 +528,8 @@ def load_card(id):
 def display_card():
     global points, cards
 
+    # здесь приходится снова загружать карточку, т.к иначе работает "ленивая загрузка",
+    # для которой поломана свзяь с users, нужная нам для показа карточки
     db_sess = db_session.create_session()
     cards = db_sess.query(Card).filter(Card.id == cards.id).first()
 
