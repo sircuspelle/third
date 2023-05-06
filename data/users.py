@@ -1,4 +1,4 @@
-import datetime
+import datetime  # ненужный импорт
 from flask_login import UserMixin
 
 import sqlalchemy

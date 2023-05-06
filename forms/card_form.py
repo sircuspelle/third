@@ -2,8 +2,8 @@ import os
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
-from wtforms import StringField, IntegerField, TextAreaField, SelectField, validators
-from wtforms import BooleanField, SubmitField
+from wtforms import StringField, IntegerField, TextAreaField, SelectField, validators  # ненужные импорты
+from wtforms import BooleanField, SubmitField  # ненужные импорты
 from wtforms.validators import DataRequired, NumberRange, ValidationError
 
 def extension_validate(form, field):

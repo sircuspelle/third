@@ -77,6 +77,7 @@ def add_news(card_id=None):
         news = News()
         news.title = form.title.data
         if len(form.content.data) > 120:
+            # [note] Можно было просто [:120]
             news.preview = form.content.data[:120:] + "..."
             news.content = form.content.data
         else:
@@ -116,6 +117,7 @@ def edit_news(news_id, where):
         if news:
             news.title = form.title.data
             if len(form.content.data) > 120:
+                # [note] Можно было просто [:120]
                 news.preview = form.content.data[:120:] + "..."
                 news.content = form.content.data
             else:
@@ -163,6 +165,7 @@ def reading_news(news_id):
 def card_news(card_id):
     db_sess = db_session.create_session()
 
+    # Можно было положить условие внутрь filter
     if current_user.is_authenticated:
         news = db_sess.query(News).filter((News.card_id == card_id),
                                           ((News.is_private != 1) | (News.user_id == current_user.id))).all()
@@ -189,8 +192,13 @@ def forum(card_id):
     global username, shift, line, line_count
     form = ForumForm()
     if form.submit.data:
+        '''
+        line никогда не бывает больше 0, судя по коду, 
+        поэтому в первую ветку программа никогда не зайдёт
+        '''
         if line:
             with open(f'files/forum{card_id}.txt', "r", encoding="utf8") as file:
+                # Можно было readlines сразу в списочное выражение положить
                 all_lines = file.readlines()
                 all_lines = [i[:-1] for i in all_lines]
                 text = f"{form.content.data};{current_user.nickname};{current_user.id};{shift};{line_count}\n"
@@ -216,6 +224,7 @@ def forum(card_id):
             content = file.readlines()
             content = [i[:-1].rsplit(';', 4) for i in content]
     except:
+        # Можно было не писать as file
         with open(f'files/forum{card_id}.txt', "w", encoding="utf8") as file:
             content = []
     return render_template('forum.html', title='Форум', form=form, content=content, card_id=card_id, check="1")
@@ -253,6 +262,7 @@ def reqister():
         )
         user.set_password(form.password.data)
         db_sess.add(user)
+        # У вас же есть замечательная функция base_com_close
         db_sess.commit()
         db_sess.close()
         return redirect('/')
@@ -289,7 +299,8 @@ def start_to_add_cards():
     if pre_form.validate_on_submit():
         cards.points_count = pre_form.points_count.data
         cards.region = pre_form.region.data
-
+        # [note] Как и говорил на защите можно делать list(range(cards.points_count * 2 + 1))
+        # Хранить points как global list приводит к большой проблеме (см. фидбек)
         points = [i for i in range(0, cards.points_count * 2 + 1)]
 
         return redirect(
@@ -377,6 +388,7 @@ def starter(id):
                                        ).first()
 
     if cards:
+        # [note] Как и говорил на защите можно делать list(range(cards.points_count * 2 + 1))
         points = [i for i in range(0, cards.points_count * 2 + 1)]
     else:
         abort(404)
@@ -387,7 +399,6 @@ def starter(id):
 @app.route('/card/<int:id>', methods=['GET', 'POST'])
 def change_cards(id):
     global cards, points
-
     form = MainCardsForm()
 
     if request.method == "GET":
@@ -426,8 +437,6 @@ def change_page(number):
         if card:
             card.txt = form.text.data
             card.title = form.title.data
-
-
             file = form.picture.data
             if file:
                 card.picture = f'{cards.id}_{number}.{file.filename.split(".")[-1]}'
@@ -438,6 +447,7 @@ def change_page(number):
 
             if number != points[-1]:
                 return redirect(f'/card/page/{number + 1}')
+            # [note] Можно было не писать else:
             else:
 
                 try:
@@ -447,7 +457,7 @@ def change_page(number):
                 except Exception as ex:
                     db_sess.close()
                     return f"{ex}"
-
+            # До этой строки программа никогда не дойдёт
                 return redirect('/')
 
     if number % 2:
@@ -460,6 +470,7 @@ def change_page(number):
 
     return render_template('small_card.html', title=f'шаг {number}', page=number,
                            head=header, count=points, form=form)
+
 
 @app.route('/card_pre_map/<int:chng>', methods=['GET', 'POST'])
 def add_map(chng):
@@ -477,6 +488,11 @@ def set_map(arg, chng):
     return redirect(f'''/new_card''')
 
 
+'''
+Плохая идея называть переменную так же, как и встроенную функцию id()
+В какой-то момент можно неожиданно вызвать её, да и вызов функции id становится недоступным(
+P.S. это относитя к дальнейшему использованию id
+'''
 @app.route("/display_card/<int:id>")
 def load_card(id):
     global points, cards
@@ -487,6 +503,7 @@ def load_card(id):
     cards = db_sess.query(Card).filter(Card.id == id).first()
 
     if cards:
+        # [note] Как и говорил на защите можно делать list(range(1, cards.points_count * 2 + 1))
         points = [i for i in range(1, cards.points_count * 2 + 1)]
 
         return redirect(f'/display_cards#{cards.map}')
@@ -497,7 +514,7 @@ def load_card(id):
 @app.route("/display_cards")
 def display_card():
     global points, cards
-
+    # Похоже на костыль, но поверю, что это нормальный выход из положения :)
     # здесь приходится снова загружать карточку, т.к иначе работает "ленивая загрузка",
     # для которой поломана свзяь с users, нужная нам для показа карточки
     db_sess = db_session.create_session()
@@ -520,6 +537,7 @@ def display_page(number):
         card = card[number - 1]
         return render_template('small_card_display.html', card=card, cards=cards, page=number,
                                title=f'{card.title}', count=points)
+    # [note] Можно было убрать else:
     else:
         return """неполноценная карточка"""
 
