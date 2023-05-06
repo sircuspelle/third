@@ -3,6 +3,7 @@ from wtforms import PasswordField, StringField, TextAreaField, SubmitField, Emai
     BooleanField, SelectField
 from wtforms.validators import DataRequired
 
+# В двух файлах у вас один и тот же список regions, надо было вынести в константы
 regions = ["Республика Адыгея (Адыгея)",
            "Республика Башкортостан",
            "Республика Бурятия",
@@ -86,6 +87,7 @@ regions = ["Республика Адыгея (Адыгея)",
            "Ханты-Мансийский автономный округ - Югра",
            "Чукотский автономный округ",
            "Ямало-Ненецкий автономный округ"]
+
 class RegisterForm(FlaskForm):
     email = EmailField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
